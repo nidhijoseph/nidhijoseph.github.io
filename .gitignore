@@ -9,3 +9,6 @@
 
 # local scratch
 _tmpsrc/
+
+# npm packages, restored with: npm install
+node_modules/
