@@ -1,0 +1,24 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Portfolio preview</title>
+<!-- Local preview: run  python3 -m http.server 8899  in this folder,
+     then open http://localhost:8899/preview.html -->
+<style>html,body{margin:0;background:#000}#err{color:#ff6b6b;font:13px/1.5 ui-monospace,monospace;padding:20px;white-space:pre-wrap}</style>
+</head><body>
+<div id="root"></div><div id="err"></div>
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
+<script>
+window.__status = "starting";
+fetch('portfolio-draft.jsx?v=' + Date.now(), { cache: 'no-store' }).then(r => r.text()).then(src => {
+  src = src.replace(/^import[^\n]*\n/, '').replace('export default function Portfolio', 'function Portfolio');
+  const out = Babel.transform(src, { presets: [['react', {runtime: 'classic'}]] }).code;
+  const make = new Function('React','useEffect','useLayoutEffect','useRef','useState', out + '\nreturn Portfolio;');
+  const Portfolio = make(React, React.useEffect, React.useLayoutEffect, React.useRef, React.useState);
+  ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(Portfolio));
+  window.__status = "rendered";
+}).catch(e => {
+  window.__status = "ERROR: " + (e && e.message);
+  document.getElementById('err').textContent = (e && e.stack) || String(e);
+});
+</script></body></html>

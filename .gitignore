@@ -1,0 +1,11 @@
+# macOS
+.DS_Store
+
+# QuickTime originals — each has an identical .mp4 the site actually uses
+*.mov
+
+# uncompressed video originals, kept locally as a safety net
+.video-originals/
+
+# local scratch
+_tmpsrc/
