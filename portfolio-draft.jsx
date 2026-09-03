@@ -792,7 +792,7 @@ const CSS = `
 /* ---------- work ---------- */
 .pf-work { padding: clamp(28px, 4vw, 56px) 0 clamp(64px, 10vw, 120px); display: flex; flex-direction: column; gap: clamp(32px, 4vw, 52px); }
 .pf-work-head { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; margin-bottom: 6px; }
-.pf-eyebrow { font-size: 12px; color: rgba(255,255,255,0.5); margin: 0; }
+.pf-eyebrow { color: rgba(255,255,255,0.5); margin: 0; }
 .pf-card { position: relative; display: block; width: 100%; padding: 0; margin: 0; border: 0; text-align: left; font: inherit; color: inherit; cursor: pointer; overflow: hidden; border-radius: 3px; background: #000; transition: transform .6s cubic-bezier(.22,1,.36,1), box-shadow .6s cubic-bezier(.22,1,.36,1); }
 .pf-card:hover { transform: translateY(-8px) scale(1.004); box-shadow: 0 22px 50px rgba(0,0,0,0.55); }
 
@@ -899,11 +899,18 @@ const CSS = `
 .pf-d-body { padding: clamp(30px, 4.5vw, 56px) clamp(20px, 3.5vw, 48px) clamp(34px, 5vw, 64px); }
 .pf-d-top { display: grid; grid-template-columns: clamp(92px, 20vw, 230px) 1fr; gap: clamp(16px, 3.5vw, 60px); align-items: center; }
 .pf-d-notes { display: flex; flex-direction: column; gap: 15px; }
-.pf-d-note-k {
-  font-weight: 400; font-size: 10.5px; letter-spacing: 0.09em; text-transform: uppercase;
-  color: rgba(255,255,255,0.42); margin: 0 0 5px;
+/* ------------------------------------------------------------------
+   One label treatment, shared by every small heading on the page: the
+   rail labels, the meta keys, the section headings inside a case study,
+   the step numbers and the eyebrows. Only the colour changes with
+   context. The footer is deliberately left out of this.
+   ------------------------------------------------------------------ */
+.pf-d-note-k, .pf-d-sec-label, .pf-d-h3, .pf-step-n, .pf-eyebrow, .pf-cv-label {
+  font-size: 10.5px; font-weight: 400; letter-spacing: 0.09em;
+  text-transform: uppercase; line-height: 1.45;
 }
-.pf-d-note-v { font-weight: 300; font-size: clamp(11.5px, 1.3vw, 13px); line-height: 1.5; margin: 0; }
+.pf-d-note-k { color: rgba(255,255,255,0.42); margin: 0 0 5px; }
+.pf-d-note-v { font-weight: 300; font-size: clamp(12.5px, 1.3vw, 13.5px); line-height: 1.55; margin: 0; }
 .pf-d-headline {
   line-height: 1.16; letter-spacing: -0.035em;
   font-weight: 500; color: #fff; margin: 0;
@@ -925,8 +932,8 @@ const CSS = `
 .pf-d-hero img, .pf-d-hero svg, .pf-d-hero video { width: 100%; display: block; }
 .pf-d-intro { max-width: 62ch; margin-top: clamp(28px, 4vw, 44px); }
 .pf-d-cols { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(16px, 3.5vw, 56px); }
-.pf-d-h3 { font-size: 15px; font-weight: 500; margin: 0 0 13px; letter-spacing: -0.01em; }
-.pf-d-cols p:not([class]), .pf-d-out p:not([class]), .pf-d-intro p:not([class]), .pf-d-sec p:not([class]) { font-size: clamp(13px, 1.02vw, 15.5px); line-height: 1.7; color: rgba(255,255,255,0.72); margin: 0 0 clamp(13px, 1.1vw, 17px); }
+.pf-d-h3 { margin: 0 0 13px; }
+.pf-d-cols p:not([class]), .pf-d-out p:not([class]), .pf-d-intro p:not([class]), .pf-d-sec p:not([class]) { font-size: clamp(14.5px, 1.02vw, 15.5px); line-height: 1.72; color: rgba(255,255,255,0.72); margin: 0 0 clamp(13px, 1.1vw, 17px); }
 .pf-d-cols p:not([class]):last-child, .pf-d-out p:not([class]):last-child, .pf-d-intro p:not([class]):last-child, .pf-d-sec p:not([class]):last-child { margin-bottom: 0; }
 .pf-d-out { margin-top: clamp(30px, 4.5vw, 56px); }
 .pf-d-shots { display: grid; gap: 20px; margin-top: clamp(32px, 5vw, 60px); }
@@ -937,11 +944,7 @@ const CSS = `
 /* ---------- extended case-study blocks ---------- */
 .pf-d-sec { margin-top: clamp(34px, 5vw, 62px); padding-top: clamp(26px, 3.5vw, 40px); border-top: 1px solid rgba(255,255,255,0.11); }
 .pf-d-sec-grid { display: grid; grid-template-columns: clamp(92px, 20vw, 230px) 1fr; gap: clamp(16px, 3.5vw, 60px); align-items: start; }
-.pf-d-sec-label {
-  font-weight: 400; font-size: clamp(10.5px, 1.3vw, 11.5px);
-  letter-spacing: 0.09em; text-transform: uppercase;
-  color: rgba(255,255,255,0.42); margin: 0 0 18px;
-}
+.pf-d-sec-label { color: rgba(255,255,255,0.42); margin: 0 0 18px; }
 .pf-d-side { display: flex; flex-direction: column; gap: 15px; }
 .pf-d-figure { margin: clamp(22px, 3vw, 34px) 0 0; }
 /* a figure with its reading sat alongside rather than underneath */
@@ -952,9 +955,9 @@ const CSS = `
 .pf-figure-aside > .pf-tileimg { background: #fff; }
 .pf-figure-aside > div { padding: clamp(18px, 2.4vw, 30px) clamp(20px, 2.8vw, 34px); }
 .pf-figure-aside .pf-aside-b { font-size: clamp(14px, 1.7vw, 17px); color: rgba(255,255,255,0.86); max-width: none; }
-.pf-aside-b { font-size: clamp(12.5px, 1.4vw, 14px); font-weight: 300; color: rgba(255,255,255,0.62); line-height: 1.6; margin: 0; }
+.pf-aside-b { font-size: clamp(13.5px, 1.4vw, 14.5px); font-weight: 300; color: rgba(255,255,255,0.62); line-height: 1.65; margin: 0; }
 @media (max-width: 700px) { .pf-figure-aside { grid-template-columns: 1fr; gap: 16px; } }
-.pf-d-cap { font-size: clamp(12px, 1.3vw, 13.5px); color: rgba(255,255,255,0.68); margin: 10px 0 0; line-height: 1.5; }
+.pf-d-cap { font-size: clamp(13px, 1.3vw, 14px); color: rgba(255,255,255,0.68); margin: 10px 0 0; line-height: 1.6; }
 
 /* logo pair */
 .pf-d-marks { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(14px, 2.5vw, 30px); margin-top: clamp(22px, 3vw, 34px); align-items: start; }
@@ -976,7 +979,7 @@ const CSS = `
 .pf-collage-group + .pf-collage-group { margin-top: clamp(46px, 6.5vw, 88px); }
 .pf-collage-group .pf-collage { margin-top: 0; }
 .pf-collage-group .pf-group-copy .pf-d-sec-label { line-height: 1; margin-top: 2px; }
-.pf-group-b { font-size: clamp(12.5px, 0.92vw, 14px); font-weight: 300; color: rgba(255,255,255,0.6); line-height: 1.6; margin: 12px 0 0; }
+.pf-group-b { font-size: clamp(13.5px, 0.92vw, 14.5px); font-weight: 300; color: rgba(255,255,255,0.6); line-height: 1.65; margin: 12px 0 0; }
 @media (max-width: 700px) { .pf-collage-group { grid-template-columns: 1fr; gap: 18px; } }
 
 /* clip tile with transport controls */
@@ -1071,11 +1074,11 @@ const CSS = `
 .pf-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: clamp(16px, 2.5vw, 34px); margin-top: clamp(24px, 3.5vw, 38px); }
 .pf-stat { border-top: 1px solid rgba(255,255,255,0.14); padding-top: 15px; }
 .pf-stat-v { font-size: clamp(30px, 5vw, 46px); font-weight: 600; letter-spacing: -0.03em; line-height: 1; margin: 0 0 10px; }
-.pf-stat-l { font-size: clamp(11.5px, 1.3vw, 13px); font-weight: 300; line-height: 1.5; color: rgba(255,255,255,0.62); margin: 0; }
+.pf-stat-l { font-size: clamp(13px, 1.3vw, 13.5px); font-weight: 300; line-height: 1.55; color: rgba(255,255,255,0.62); margin: 0; }
 
 /* callout for a key insight or a combined finding */
 .pf-insight { margin-top: clamp(24px, 3.5vw, 38px); padding: clamp(16px, 2.2vw, 24px) clamp(18px, 2.6vw, 28px); border-radius: 3px; background: rgba(255,255,255,0.045); }
-.pf-ins-body { font-size: clamp(12.5px, 1.45vw, 15px); line-height: 1.55; font-weight: 300; margin: 0 0 11px; }
+.pf-ins-body { font-size: clamp(14px, 1.45vw, 15px); line-height: 1.62; font-weight: 300; margin: 0 0 11px; }
 .pf-ins-body:last-child { margin-bottom: 0; }
 
 /* ---------- user & client needs ---------- */
@@ -1098,7 +1101,7 @@ const CSS = `
 /* a feature's copy starts level with the top of its screen */
 .pf-stage.top { align-items: start; }
 .pf-stage.top .pf-stage-copy { padding-top: 4px; }
-.pf-step-n { font-weight: 400; font-size: 10.5px; letter-spacing: 0.09em; text-transform: uppercase; margin: 0 0 10px; }
+.pf-step-n { margin: 0 0 10px; }
 .pf-step-t { font-size: clamp(15px, 1.7vw, 19px); font-weight: 500; margin: 0 0 9px; letter-spacing: -0.02em; }
 .pf-step-b { font-size: clamp(12.5px, 1.4vw, 14px); font-weight: 300; color: rgba(255,255,255,0.6); line-height: 1.6; margin: 0; }
 /* The phone narrows rather than dropping under the copy — a stage should read
@@ -1149,7 +1152,7 @@ const CSS = `
 .pf-dl { font-size: 12px; color: rgba(255,255,255,0.8); display: inline-flex; align-items: center; gap: 8px; padding: 9px 18px; border-radius: 999px; transition: background .25s, color .25s; }
 .pf-dl:hover { background: rgba(255,255,255,0.09); color: #fff; }
 .pf-cv-block { display: grid; grid-template-columns: clamp(88px, 17vw, 190px) 1fr; gap: clamp(16px, 3vw, 34px); padding: clamp(20px, 3vw, 28px) 0; border-top: 1px solid rgba(255,255,255,0.11); }
-.pf-cv-label { font-size: clamp(11px, 1.3vw, 13px); color: rgba(255,255,255,0.62); letter-spacing: -0.005em; }
+.pf-cv-label { color: rgba(255,255,255,0.62); }
 .pf-cv-item { margin-bottom: 22px; }
 .pf-cv-item:last-child { margin-bottom: 0; }
 .pf-cv-top { display: flex; justify-content: space-between; align-items: baseline; gap: 14px; flex-wrap: wrap; }
