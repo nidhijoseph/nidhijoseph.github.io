@@ -1150,7 +1150,9 @@ const CSS = `
 .pf-cv-head { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-bottom: 34px; }
 .pf-dl { font-size: 12px; color: rgba(255,255,255,0.8); display: inline-flex; align-items: center; gap: 8px; padding: 9px 18px; border-radius: 999px; transition: background .25s, color .25s; }
 .pf-dl:hover { background: rgba(255,255,255,0.09); color: #fff; }
-.pf-cv-block { display: grid; grid-template-columns: clamp(88px, 17vw, 190px) 1fr; gap: clamp(16px, 3vw, 34px); padding: clamp(20px, 3vw, 28px) 0; border-top: 1px solid rgba(255,255,255,0.11); }
+/* first-baseline alignment, so the small label sits on the same line as the
+   first line of the entry beside it rather than on the same top edge */
+.pf-cv-block { display: grid; grid-template-columns: clamp(88px, 17vw, 190px) 1fr; gap: clamp(16px, 3vw, 34px); align-items: baseline; padding: clamp(20px, 3vw, 28px) 0; border-top: 1px solid rgba(255,255,255,0.11); }
 .pf-cv-label { color: rgba(255,255,255,0.62); }
 .pf-cv-item { margin-bottom: 22px; }
 .pf-cv-item:last-child { margin-bottom: 0; }
@@ -1228,10 +1230,23 @@ const CSS = `
 /* On a larger screen a card used to stand taller than the window, so it filled
    the view on its own and gave no sense of a list. The card is sized from the
    window's height instead, narrow enough that a card centred on screen leaves
-   the ones above and below it partly visible. Its proportions are unchanged —
-   the width follows from the height, since the image sets the shape. */
+   the ones above and below it partly visible.
+
+   Everything inside it is then measured against the card's own width rather
+   than the window's, so a smaller card is the same design at a smaller size —
+   not the old one with a thicker frame and larger type. At the full 1120px the
+   figures below resolve to exactly the values the card has always had: 26.9px
+   of frame, a 21px title, 12px meta. */
 @media (min-width: 761px) {
-  .pf-card { max-width: min(100%, calc(117vh - 106px)); margin-inline: auto; }
+  .pf-card {
+    max-width: min(100%, calc(117vh - 106px));
+    margin-inline: auto;
+    container-type: inline-size;
+  }
+  .pf-card .pf-card-bar { padding: 1.875cqw 2.4cqw; }
+  .pf-card .pf-card-title { font-size: 1.875cqw; }
+  .pf-card .pf-card-bar .meta { font-size: 1.07cqw; gap: 1.25cqw; }
+  .pf-card .pf-canvas { padding: 0 2.4cqw 2.4cqw; }
 }
 
 /* A touch screen has no pointer to hover with, but a tap leaves :hover stuck on
@@ -1250,12 +1265,12 @@ const CSS = `
    the few that do not are shrunk to fit by fitCardTitle, per card, so the bar
    never wraps and every card in the list is the same height. */
 @media (max-width: 560px) {
-  /* Tight above and below the title, and a shrunken title would otherwise make
-     its own bar shorter than the rest, so the bar holds the height of a
-     full-size one either way. The frame around the image comes in to match, so
-     the card is mostly the work rather than the space around it. */
-  .pf-card-bar { gap: 10px; padding: 9px 10px; min-height: 37px; }
-  .pf-canvas { padding: 0 10px 10px; }
+  /* One even 8px frame all the way round. The bar's padding is set to 4px
+     because the title's line box carries about 4px of leading above the capital
+     and below the baseline, so the space you actually see — edge to letter, and
+     letter to image — comes out at 8px on every side. */
+  .pf-card-bar { gap: 10px; padding: 4px 8px; min-height: 27px; }
+  .pf-canvas { padding: 0 8px 8px; }
   /* The category and year hold their natural width; squeezed, they wrapped and
      made that card taller. The chevron goes — the whole card is tappable, and
      its 26px is what the longest title needs to stay on one line. */
@@ -1281,10 +1296,10 @@ const CSS = `
      4:5 so it does not fill the screen before a line has been read. */
   .pf-about .pf-cv-block { grid-template-columns: 1fr; gap: 26px; }
   .pf-about-left { max-width: none; align-items: center; }
-  /* The same 4:5 crop the desktop uses. Cropping it to a landscape 5:4 to save
-     height cut the photograph about badly, so it keeps its shape and simply
-     takes the full column width. */
-  .pf-portrait { width: 100%; margin-inline: auto; border-radius: 4px; }
+  /* The photograph as taken. Any fixed ratio here crops it — 4:5 trims the top
+     and bottom, 5:4 cut it about badly — so on a phone it simply keeps its own
+     proportions and takes the full column width. */
+  .pf-portrait { width: 100%; height: auto; aspect-ratio: auto; object-fit: contain; margin-inline: auto; border-radius: 4px; }
   /* At a phone's measure the long words in this copy — "Communication",
      "problem-solving" — decide where the lines break. Measured across every
      line, 14px leaves the evenest right edge: the shortest line fills 80% of
