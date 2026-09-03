@@ -660,7 +660,6 @@ const PROJECTS = [
     ink: "#0E1B26",
     image: HERO_PAINTING,
     detail: {
-      skills: "Colour, Composition",
       headline: "The first place I learned that colour could carry a feeling, and where making things began for me.",
       intro: [
         "Painting has been part of my life since I was young and was one of the things that first drew me towards design. I've always enjoyed experimenting with colour, composition, and different ways of creating an image.",
@@ -2150,8 +2149,11 @@ function ProjectCard({ p, open, owns, onToggle }) {
   const d = p.detail;
   const notes = [
     p.year && { k: "Year", v: p.year },
-    d && { k: "Tools", v: d.tools },
-    d && { k: "Skills", v: d.skills },
+    /* A note is only listed when the project actually has one. Tools and Skills
+       used to be added unconditionally, so a project that named neither still
+       showed the labels with nothing under them. */
+    d && d.tools && { k: "Tools", v: d.tools },
+    d && d.skills && { k: "Skills", v: d.skills },
     d && d.team && { k: "Team", v: d.team },
     d && d.client && { k: "Client", v: d.client },
     d && d.agency && { k: "Agency", v: d.agency },
