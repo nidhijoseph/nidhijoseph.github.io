@@ -1226,6 +1226,41 @@ const CSS = `
   .pf-d-headline span { display: inline; }
 }
 
+/* A touch screen has no pointer to hover with, but a tap leaves :hover stuck on
+   whatever was last touched. That left one card sitting up and slightly scaled
+   while the rest lay flat — whichever card you had last tapped or scrolled past.
+   None of the hover treatments belong on a device that cannot hover. */
+@media (hover: none) {
+  .pf-card:hover { transform: none; box-shadow: none; }
+  .pf-card:hover .pf-sheen { opacity: 0; }
+  .pf-card:hover .pf-canvas img, .pf-card:hover .pf-canvas video { transform: none; }
+  .pf-card:hover .pf-chev-right { transform: none; }
+  .pf-tileimg:hover img, .pf-tileimg:hover video { transform: none; }
+}
+
+/* The card header. Side by side, the longest title needs 272px and its category
+   and year another 112px, inside a bar only 299px wide — so that one card wrapped
+   onto a second line and stood taller than the other eight. Stacking the two
+   gives every title the full width, so none of them wrap and every card in the
+   list is the same height. */
+@media (max-width: 560px) {
+  .pf-card-bar { flex-direction: column; align-items: flex-start; gap: 3px; padding: 13px 18px; }
+  .pf-card-bar .meta { font-size: 11px; gap: 10px; }
+  .pf-card-title { font-size: 15px; }
+}
+
+/* About and Resume are built on the same two-column block, which on a phone left
+   the portrait 105px wide beside a 210px column of text — too small to see and
+   too narrow to read. They stack, and the text takes the full width. */
+@media (max-width: 700px) {
+  .pf-cv-block { grid-template-columns: 1fr; gap: 14px; }
+  /* About sets its own two-column split, at a higher specificity than the rule
+     above, so it has to be named here or it keeps its columns. */
+  .pf-about .pf-cv-block { grid-template-columns: 1fr; gap: 24px; }
+  .pf-about-left { max-width: 210px; }
+  .pf-about p.body { max-width: none; }
+}
+
 /* Navigation. At 375px the bar wanted 424px of pill, so "Contact" fell off
    the end and the name broke onto a second line. Everything tightens until
    the whole bar fits, and the name is held on one line. */
