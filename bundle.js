@@ -218,10 +218,10 @@ Error generating stack: `+o.message+`
 .pf-d-top { display: grid; grid-template-columns: clamp(92px, 20vw, 230px) 1fr; gap: clamp(16px, 3.5vw, 60px); align-items: center; }
 .pf-d-notes { display: flex; flex-direction: column; gap: 15px; }
 .pf-d-note-k {
-  font-weight: 500; font-size: 10.5px; letter-spacing: 0.09em; text-transform: uppercase;
+  font-weight: 400; font-size: 10.5px; letter-spacing: 0.09em; text-transform: uppercase;
   color: rgba(255,255,255,0.42); margin: 0 0 5px;
 }
-.pf-d-note-v { font-weight: 400; font-size: clamp(12.5px, 1.3vw, 13px); line-height: 1.5; margin: 0; }
+.pf-d-note-v { font-weight: 300; font-size: clamp(11.5px, 1.3vw, 13px); line-height: 1.5; margin: 0; }
 .pf-d-headline {
   line-height: 1.16; letter-spacing: -0.035em;
   font-weight: 500; color: #fff; margin: 0;
@@ -244,8 +244,8 @@ Error generating stack: `+o.message+`
 .pf-d-intro { max-width: 62ch; margin-top: clamp(28px, 4vw, 44px); }
 .pf-d-cols { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(16px, 3.5vw, 56px); }
 .pf-d-h3 { font-size: 15px; font-weight: 500; margin: 0 0 13px; letter-spacing: -0.01em; }
-.pf-d-cols p, .pf-d-out p, .pf-d-intro p, .pf-d-sec p:not([class]) { font-size: clamp(13px, 1.02vw, 15.5px); line-height: 1.7; color: rgba(255,255,255,0.72); margin: 0 0 clamp(13px, 1.1vw, 17px); }
-.pf-d-cols p:last-child, .pf-d-out p:last-child, .pf-d-intro p:last-child, .pf-d-sec p:not([class]):last-child { margin-bottom: 0; }
+.pf-d-cols p:not([class]), .pf-d-out p:not([class]), .pf-d-intro p:not([class]), .pf-d-sec p:not([class]) { font-size: clamp(13px, 1.02vw, 15.5px); line-height: 1.7; color: rgba(255,255,255,0.72); margin: 0 0 clamp(13px, 1.1vw, 17px); }
+.pf-d-cols p:not([class]):last-child, .pf-d-out p:not([class]):last-child, .pf-d-intro p:not([class]):last-child, .pf-d-sec p:not([class]):last-child { margin-bottom: 0; }
 .pf-d-out { margin-top: clamp(30px, 4.5vw, 56px); }
 .pf-d-shots { display: grid; gap: 20px; margin-top: clamp(32px, 5vw, 60px); }
 .pf-d-shot { border-radius: 3px; overflow: hidden; }
@@ -256,7 +256,7 @@ Error generating stack: `+o.message+`
 .pf-d-sec { margin-top: clamp(34px, 5vw, 62px); padding-top: clamp(26px, 3.5vw, 40px); border-top: 1px solid rgba(255,255,255,0.11); }
 .pf-d-sec-grid { display: grid; grid-template-columns: clamp(92px, 20vw, 230px) 1fr; gap: clamp(16px, 3.5vw, 60px); align-items: start; }
 .pf-d-sec-label {
-  font-weight: 500; font-size: clamp(10.5px, 1.3vw, 11.5px);
+  font-weight: 400; font-size: clamp(10.5px, 1.3vw, 11.5px);
   letter-spacing: 0.09em; text-transform: uppercase;
   color: rgba(255,255,255,0.42); margin: 0 0 18px;
 }
@@ -280,7 +280,7 @@ Error generating stack: `+o.message+`
 .pf-swatches { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
 .pf-swatch { display: flex; align-items: center; gap: 9px; font-size: 11.5px; color: rgba(255,255,255,0.62); }
 .pf-swatch i { width: 17px; height: 17px; border-radius: 3px; display: block; flex: none; }
-.pf-swatch b { font-weight: 500; letter-spacing: 0.04em; color: rgba(255,255,255,0.82); }
+.pf-swatch b { font-weight: 400; letter-spacing: 0.04em; color: rgba(255,255,255,0.82); }
 
 /* collage */
 .pf-collage { display: grid; grid-template-columns: repeat(6, 1fr); gap: clamp(12px, 1.9vw, 24px); margin-top: clamp(22px, 3vw, 34px); align-items: start; }
@@ -416,7 +416,7 @@ Error generating stack: `+o.message+`
 /* a feature's copy starts level with the top of its screen */
 .pf-stage.top { align-items: start; }
 .pf-stage.top .pf-stage-copy { padding-top: 4px; }
-.pf-step-n { font-weight: 500; font-size: 10.5px; letter-spacing: 0.09em; text-transform: uppercase; margin: 0 0 10px; }
+.pf-step-n { font-weight: 400; font-size: 10.5px; letter-spacing: 0.09em; text-transform: uppercase; margin: 0 0 10px; }
 .pf-step-t { font-size: clamp(15px, 1.7vw, 19px); font-weight: 500; margin: 0 0 9px; letter-spacing: -0.02em; }
 .pf-step-b { font-size: clamp(12.5px, 1.4vw, 14px); font-weight: 300; color: rgba(255,255,255,0.6); line-height: 1.6; margin: 0; }
 /* The phone narrows rather than dropping under the copy \u2014 a stage should read
@@ -529,8 +529,8 @@ Error generating stack: `+o.message+`
   .pf-d-notes > * { flex: 1 1 40%; min-width: 128px; }
 
   /* Comfortable measure and a slightly looser line for reading at arm's length. */
-  .pf-d-cols p, .pf-d-out p, .pf-d-intro p, .pf-d-sec p:not([class]) {
-    font-size: 14.5px; line-height: 1.72;
+  .pf-d-cols p:not([class]), .pf-d-out p:not([class]), .pf-d-intro p:not([class]), .pf-d-sec p:not([class]) {
+    line-height: 1.72;
   }
   .pf-d-headline { font-size: clamp(23px, 6.2vw, 30px); }
   /* The headline is written as one line per phrase; on a phone those
