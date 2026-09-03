@@ -1242,9 +1242,10 @@ const CSS = `
    the few that do not are shrunk to fit by fitCardTitle, per card, so the bar
    never wraps and every card in the list is the same height. */
 @media (max-width: 560px) {
-  /* A shrunken title would otherwise make its own bar shorter than the rest,
-     so the bar holds the height of a full-size one either way. */
-  .pf-card-bar { gap: 10px; padding: 14px 18px; min-height: 47px; }
+  /* Tight above and below the title, and a shrunken title would otherwise make
+     its own bar shorter than the rest, so the bar holds the height of a
+     full-size one either way. */
+  .pf-card-bar { gap: 10px; padding: 9px 18px; min-height: 37px; }
   /* The category and year hold their natural width; squeezed, they wrapped and
      made that card taller. The chevron goes — the whole card is tappable, and
      its 26px is what the longest title needs to stay on one line. */
@@ -1260,15 +1261,17 @@ const CSS = `
    the portrait 105px wide beside a 210px column of text — too small to see and
    too narrow to read. They stack, and the text takes the full width. */
 @media (max-width: 700px) {
-  .pf-cv-block { grid-template-columns: 1fr; gap: 14px; }
-  /* About sets its own two-column split, at a higher specificity than the rule
-     above, so it has to be named here or it keeps its columns. */
+  /* Resume keeps the two columns it has always had. The label column simply has
+     to be wide enough for its longest word: "Certifications" measures 104px and
+     cannot break, so in an 88px column it ran into the text beside it. */
+  .pf-cv-block { grid-template-columns: 110px 1fr; gap: 16px; }
+
+  /* About is the one that stacks: the portrait sits above the writing, centred
+     and exactly as wide as the paragraphs, cropped 5:4 rather than the desktop
+     4:5 so it does not fill the screen before a line has been read. */
   .pf-about .pf-cv-block { grid-template-columns: 1fr; gap: 26px; }
-  /* The portrait takes the full column and the writing sits underneath it,
-     in a slightly wider frame than the desktop 4:5 so it does not swallow
-     the screen before a single line has been read. */
-  .pf-about-left { max-width: none; }
-  .pf-portrait { aspect-ratio: 5 / 4; object-position: 50% 35%; border-radius: 4px; }
+  .pf-about-left { max-width: none; align-items: center; }
+  .pf-portrait { width: 100%; margin-inline: auto; aspect-ratio: 5 / 4; object-position: 50% 35%; border-radius: 4px; }
   .pf-about p.body { max-width: none; }
 }
 
