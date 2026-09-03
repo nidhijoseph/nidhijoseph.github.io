@@ -495,12 +495,13 @@ const PROJECTS = [
             "Three colourways, each shown front then back, with the English and Arabic set as one composition rather than two translations.",
           ],
           items: [
-            { src: AF_YELLOW, caption: "Yellow, front", span: 2 },
-            { src: AF_MINT, caption: "Mint, front", span: 2 },
-            { src: AF_PURPLE, caption: "Purple, front", span: 2 },
-            { src: AF_YELLOW_B, caption: "Yellow, back", span: 2 },
-            { src: AF_MINT_B, caption: "Mint, back", span: 2 },
-            { src: AF_PURPLE_B, caption: "Purple, back", span: 2 },
+            /* each poster's front and its own back sit side by side, a pair to a row */
+            { src: AF_YELLOW, caption: "Yellow, front", span: 3 },
+            { src: AF_YELLOW_B, caption: "Yellow, back", span: 3 },
+            { src: AF_MINT, caption: "Mint, front", span: 3 },
+            { src: AF_MINT_B, caption: "Mint, back", span: 3 },
+            { src: AF_PURPLE, caption: "Purple, front", span: 3 },
+            { src: AF_PURPLE_B, caption: "Purple, back", span: 3 },
           ],
         },
         {
@@ -772,11 +773,16 @@ const CSS = `
 .pf-desc { max-width: 620px; }
 .pf-desc-label { font-size: 14px; color: rgba(255,255,255,0.55); margin: 0 0 8px; }
 .pf-roll { position: relative; display: block; overflow: hidden; height: 1.5em; font-size: clamp(1.45rem, 4vw, 2.6rem); letter-spacing: -0.035em; line-height: 1.15; font-weight: 500; }
-.pf-roll-item { position: absolute; left: 0; top: 0; width: 100%; white-space: nowrap; color: #FF6A1F; text-shadow: 0 0 34px rgba(255,106,31,0.35); will-change: transform, opacity; }
-.pf-enter { animation: rollIn 1s cubic-bezier(0.16, 1, 0.3, 1) both; }
-.pf-exit  { animation: rollOut 1s cubic-bezier(0.16, 1, 0.3, 1) both; }
-@keyframes rollIn  { from { transform: translate3d(0,105%,0); opacity: 0; } 45% { opacity: 1; } to { transform: translate3d(0,0,0); opacity: 1; } }
-@keyframes rollOut { from { transform: translate3d(0,0,0); opacity: 1; } 55% { opacity: 0; } to { transform: translate3d(0,-105%,0); opacity: 0; } }
+.pf-roll-item { position: absolute; left: 0; top: 0; width: 100%; white-space: nowrap; color: #FF6A1F; will-change: transform; }
+/* A reel, not a cross-fade. Both words travel the same distance at the same
+   speed and stay fully opaque the whole way, so one is read as pushing the
+   other out of the window; fading them through each other is what stopped it
+   feeling mechanical. The curve overshoots a little and settles back, the way
+   a reel drops onto its stop. */
+.pf-enter { animation: rollIn .58s cubic-bezier(.2,1.18,.34,1) both; }
+.pf-exit  { animation: rollOut .58s cubic-bezier(.2,1.18,.34,1) both; }
+@keyframes rollIn  { from { transform: translate3d(0,112%,0); } to { transform: translate3d(0,0,0); } }
+@keyframes rollOut { from { transform: translate3d(0,0,0); } to { transform: translate3d(0,-112%,0); } }
 
 /* hero foot */
 .pf-hero-foot { position: relative; z-index: 2; display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
@@ -793,7 +799,10 @@ const CSS = `
 .pf-work-head { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; margin-bottom: 6px; }
 .pf-eyebrow { color: rgba(255,255,255,0.5); margin: 0; }
 .pf-card { position: relative; display: block; width: 100%; padding: 0; margin: 0; border: 0; text-align: left; font: inherit; color: inherit; cursor: pointer; overflow: hidden; border-radius: 3px; background: #000; transition: transform .6s cubic-bezier(.22,1,.36,1), box-shadow .6s cubic-bezier(.22,1,.36,1); }
-.pf-card:hover { transform: translateY(-8px) scale(1.004); box-shadow: 0 22px 50px rgba(0,0,0,0.55); }
+/* The whole card grows as one. It used to lift by 8px while scaling barely at
+   all, and the picture inside scaled on its own — so the frame stayed put while
+   its contents crept, which is what made the spacing look wrong. */
+.pf-card:hover { transform: translateY(-6px) scale(1.025); box-shadow: 0 26px 60px rgba(0,0,0,0.6); }
 
 /* light that follows the pointer across a card */
 .pf-sheen { position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .5s ease; background: radial-gradient(320px circle at var(--cx, 50%) var(--cy, 50%), rgba(255,255,255,0.14), transparent 62%); }
@@ -858,7 +867,7 @@ const CSS = `
 .pf-canvas { aspect-ratio: 16 / 9.5; width: 100%; padding: clamp(18px, 2.1vw, 28px); padding-top: 0; }
 .pf-canvas-in { width: 100%; height: 100%; overflow: hidden; border-radius: 2px; background: transparent; }
 .pf-canvas img, .pf-canvas video { width: 100%; height: 100%; object-fit: contain; display: block; transition: transform .6s var(--ease); }
-.pf-card:hover .pf-canvas img, .pf-card:hover .pf-canvas video { transform: scale(1.03); }
+/* the picture no longer moves independently of its frame */
 
 /* ---------- card flip ---------- */
 .pf-flip-wrap { perspective: 2000px; perspective-origin: 50% 40%; }
@@ -909,7 +918,7 @@ const CSS = `
   text-transform: uppercase; line-height: 1.45;
 }
 .pf-d-note-k { color: rgba(255,255,255,0.42); margin: 0 0 5px; }
-.pf-d-note-v { font-weight: 300; font-size: clamp(12.5px, 1.3vw, 13.5px); line-height: 1.55; margin: 0; }
+.pf-d-note-v { margin: 0; }
 .pf-d-headline {
   line-height: 1.16; letter-spacing: -0.035em;
   font-weight: 500; color: #fff; margin: 0;
@@ -932,7 +941,7 @@ const CSS = `
 .pf-d-intro { max-width: 62ch; margin-top: clamp(28px, 4vw, 44px); }
 .pf-d-cols { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(16px, 3.5vw, 56px); }
 .pf-d-h3 { margin: 0 0 13px; }
-.pf-d-cols p:not([class]), .pf-d-out p:not([class]), .pf-d-intro p:not([class]), .pf-d-sec p:not([class]) { font-size: clamp(14.5px, 1.02vw, 15.5px); line-height: 1.72; color: rgba(255,255,255,0.72); margin: 0 0 clamp(13px, 1.1vw, 17px); }
+.pf-d-cols p:not([class]), .pf-d-out p:not([class]), .pf-d-intro p:not([class]), .pf-d-sec p:not([class]) { color: rgba(255,255,255,0.72); margin: 0 0 clamp(13px, 1.1vw, 17px); }
 .pf-d-cols p:not([class]):last-child, .pf-d-out p:not([class]):last-child, .pf-d-intro p:not([class]):last-child, .pf-d-sec p:not([class]):last-child { margin-bottom: 0; }
 .pf-d-out { margin-top: clamp(30px, 4.5vw, 56px); }
 .pf-d-shots { display: grid; gap: 20px; margin-top: clamp(32px, 5vw, 60px); }
@@ -953,10 +962,11 @@ const CSS = `
 }
 .pf-figure-aside > .pf-tileimg { background: #fff; }
 .pf-figure-aside > div { padding: clamp(18px, 2.4vw, 30px) clamp(20px, 2.8vw, 34px); }
-.pf-figure-aside .pf-aside-b { font-size: clamp(14px, 1.7vw, 17px); color: rgba(255,255,255,0.86); max-width: none; }
-.pf-aside-b { font-size: clamp(13.5px, 1.4vw, 14.5px); font-weight: 300; color: rgba(255,255,255,0.62); line-height: 1.65; margin: 0; }
+/* brighter than a normal aside, but the same size as all other body text */
+.pf-figure-aside .pf-aside-b { color: rgba(255,255,255,0.86); max-width: none; }
+.pf-aside-b { color: rgba(255,255,255,0.62); margin: 0; }
 @media (max-width: 700px) { .pf-figure-aside { grid-template-columns: 1fr; gap: 16px; } }
-.pf-d-cap { font-size: clamp(13px, 1.3vw, 14px); color: rgba(255,255,255,0.68); margin: 10px 0 0; line-height: 1.6; }
+.pf-d-cap { color: rgba(255,255,255,0.68); margin: 10px 0 0; }
 
 /* logo pair */
 .pf-d-marks { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(14px, 2.5vw, 30px); margin-top: clamp(22px, 3vw, 34px); align-items: start; }
@@ -978,7 +988,7 @@ const CSS = `
 .pf-collage-group + .pf-collage-group { margin-top: clamp(46px, 6.5vw, 88px); }
 .pf-collage-group .pf-collage { margin-top: 0; }
 .pf-collage-group .pf-group-copy .pf-d-sec-label { line-height: 1; margin-top: 2px; }
-.pf-group-b { font-size: clamp(13.5px, 0.92vw, 14.5px); font-weight: 300; color: rgba(255,255,255,0.6); line-height: 1.65; margin: 12px 0 0; }
+.pf-group-b { color: rgba(255,255,255,0.6); margin: 12px 0 0; }
 @media (max-width: 700px) { .pf-collage-group { grid-template-columns: 1fr; gap: 18px; } }
 
 /* clip tile with transport controls */
@@ -1012,7 +1022,10 @@ const CSS = `
   background: rgba(0,0,0,0.5); backdrop-filter: blur(6px); transition: background .2s, transform .3s;
 }
 .pf-tileimg:hover .pf-zoom { background: rgba(0,0,0,0.75); transform: translate(-1px,-1px); }
-@media (max-width: 620px) { .pf-collage > * { grid-column: span 3 !important; } }
+/* On a phone every picture takes the whole column. Spanning half of a six
+   column grid left them about 142px wide inside a 295px card, which is too
+   small to look at — a video especially. One per row, full width. */
+@media (max-width: 620px) { .pf-collage > * { grid-column: span 6 !important; } }
 
 /* ---------- video ---------- */
 /* Screen recordings are portrait phone captures, so a tile that holds one
@@ -1073,11 +1086,11 @@ const CSS = `
 .pf-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: clamp(16px, 2.5vw, 34px); margin-top: clamp(24px, 3.5vw, 38px); }
 .pf-stat { border-top: 1px solid rgba(255,255,255,0.14); padding-top: 15px; }
 .pf-stat-v { font-size: clamp(30px, 5vw, 46px); font-weight: 600; letter-spacing: -0.03em; line-height: 1; margin: 0 0 10px; }
-.pf-stat-l { font-size: clamp(13px, 1.3vw, 13.5px); font-weight: 300; line-height: 1.55; color: rgba(255,255,255,0.62); margin: 0; }
+.pf-stat-l { color: rgba(255,255,255,0.62); margin: 0; }
 
 /* callout for a key insight or a combined finding */
 .pf-insight { margin-top: clamp(24px, 3.5vw, 38px); padding: clamp(16px, 2.2vw, 24px) clamp(18px, 2.6vw, 28px); border-radius: 3px; background: rgba(255,255,255,0.045); }
-.pf-ins-body { font-size: clamp(14px, 1.45vw, 15px); line-height: 1.62; font-weight: 300; margin: 0 0 11px; }
+.pf-ins-body { margin: 0 0 11px; }
 .pf-ins-body:last-child { margin-bottom: 0; }
 
 /* ---------- user & client needs ---------- */
@@ -1087,7 +1100,7 @@ const CSS = `
 .pf-need:first-of-type { border-top-color: rgba(255,255,255,0.18); }
 .pf-need-t { font-size: clamp(13.5px, 1vw, 15.5px); font-weight: 500; margin: 0 0 7px; letter-spacing: -0.01em; }
 .pf-need-p { font-size: clamp(12.5px, 0.92vw, 14px); font-weight: 300; color: rgba(255,255,255,0.58); margin: 0 0 9px; line-height: 1.5; }
-.pf-need-a { font-size: clamp(12.5px, 0.92vw, 14px); font-weight: 300; line-height: 1.5; margin: 0; display: flex; gap: 8px; align-items: baseline; }
+.pf-need-a { margin: 0; display: flex; gap: 8px; align-items: baseline; }
 .pf-need-a i { font-style: normal; flex: none; }
 
 /* ---------- numbered user flow ----------
@@ -1142,7 +1155,7 @@ const CSS = `
 .pf-about-title { margin-bottom: clamp(18px, 2.4vw, 30px); }
 .pf-about-left { display: flex; flex-direction: column; gap: 20px; }
 .pf-portrait { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; display: block; border-radius: 3px; filter: saturate(0.92) contrast(1.02); }
-.pf-about p.body { font-size: clamp(14.5px, 1.75vw, 17px); line-height: 1.68; color: rgba(255,255,255,0.78); margin: 0 0 18px; max-width: 66ch; }
+.pf-about p.body { color: rgba(255,255,255,0.78); margin: 0 0 18px; max-width: 66ch; }
 .pf-about p.body:last-child { margin-bottom: 0; }
 
 /* ---------- resume ---------- */
@@ -1160,7 +1173,7 @@ const CSS = `
 .pf-cv-role { font-size: clamp(15px, 1.9vw, 18px); letter-spacing: -0.015em; font-weight: 500; }
 .pf-cv-year { font-size: 12px; color: rgba(255,255,255,0.45); white-space: nowrap; }
 .pf-cv-org { font-size: 13px; color: #FF8A45; margin-top: 3px; }
-.pf-cv-note { font-size: 13px; line-height: 1.55; color: rgba(255,255,255,0.55); margin-top: 8px; max-width: 62ch; }
+.pf-cv-note { color: rgba(255,255,255,0.55); margin-top: 8px; max-width: 62ch; }
 .pf-chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .pf-chip { font-size: 12px; color: rgba(255,255,255,0.72); padding: 7px 14px; border-radius: 999px; background: rgba(255,255,255,0.05); }
 
@@ -1247,7 +1260,32 @@ const CSS = `
   .pf-card .pf-card-title { font-size: 1.875cqw; }
   .pf-card .pf-card-bar .meta { font-size: 1.07cqw; gap: 1.25cqw; }
   .pf-card .pf-canvas { padding: 0 2.4cqw 2.4cqw; }
+
+  /* The case study on the back is held to the same width, so turning a card
+     over keeps it the size it was rather than opening out to the full page.
+     The type stays as it is — a shorter line at the same size is easier to
+     read, not harder. */
+  .pf-d { max-width: min(100%, calc(117vh - 106px)); margin-inline: auto; }
 }
+
+/* ------------------------------------------------------------------
+   BODY TEXT
+   Every passage of running text on the page is set the same: one size,
+   one weight, one leading. It used to be nine different sizes across two
+   weights, which is what made the pages feel unsettled next to each other.
+   Headings, labels and the footer are not part of this and keep their own
+   sizes. Captions are the one deliberate variation — same size, lighter
+   weight — so they read as a note about the picture rather than as part
+   of the argument.
+   ------------------------------------------------------------------ */
+.pf-d-cols p:not([class]), .pf-d-out p:not([class]), .pf-d-intro p:not([class]),
+.pf-d-sec p:not([class]), .pf-ins-body, .pf-aside-b, .pf-group-b, .pf-stat-l,
+.pf-d-note-v, .pf-need-a, .pf-cv-note, .pf-about p.body, .pf-d-cap {
+  font-size: clamp(14.5px, 1.02vw, 15.5px);
+  font-weight: 400;
+  line-height: 1.68;
+}
+.pf-d-cap { font-weight: 300; }
 
 /* A touch screen has no pointer to hover with, but a tap leaves :hover stuck on
    whatever was last touched. That left one card sitting up and slightly scaled
@@ -1305,7 +1343,7 @@ const CSS = `
      line, 14px leaves the evenest right edge: the shortest line fills 80% of
      the column against 78% at 14.5px, and going smaller makes it worse again,
      down to 68% at 12.5px. */
-  .pf-about p.body { max-width: none; font-size: 14px; line-height: 1.7; }
+  .pf-about p.body { max-width: none; }
 }
 
 /* Navigation. At 375px the bar wanted 424px of pill, so "Contact" fell off
