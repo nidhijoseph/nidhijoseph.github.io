@@ -1269,12 +1269,18 @@ const CSS = `
    landscape size — wide enough that the spread opens — and then scaled down to
    whatever width the card actually has. Both pages, simply smaller. Above the
    breakpoint nothing changes and the frame fills its box as before. */
-const FLIP_W = 900;
-const FLIP_H = 560;
+/* A flip-book opens as a two-page spread only while its frame is landscape.
+   Give it a portrait frame — which is what a phone-width column is — and it
+   falls back to a single page, so you see only the right-hand one. What decides
+   this is the frame's shape, not how many pixels wide it is: a short, narrow
+   frame still shows the spread. So the frame is simply kept landscape at every
+   width, which on a phone means a short one. Nothing is scaled or transformed,
+   so the controls stay their proper size and taps land where they should. */
+const FLIP_RATIO = 1.6; // width : height — comfortably landscape at any size
 
 function Flipbook({ src, title, height }) {
   const wrap = useRef(null);
-  const [scale, setScale] = useState(0);
+  const [landscapeH, setLandscapeH] = useState(0);
 
   useEffect(() => {
     const el = wrap.current;
@@ -1282,15 +1288,15 @@ function Flipbook({ src, title, height }) {
     const measure = () => {
       const w = el.clientWidth;
       if (!w) return;
-      setScale(window.innerWidth > 760 ? 0 : w / FLIP_W);
+      // Step in only where the natural frame would be too tall for its width.
+      setLandscapeH(w / height < FLIP_RATIO ? Math.round(w / FLIP_RATIO) : 0);
     };
     measure();
     const ro = new ResizeObserver(measure);
     ro.observe(el);
     return () => ro.disconnect();
-  }, []);
+  }, [height]);
 
-  const shrunk = scale > 0;
   return (
     <div ref={wrap} className="pf-d-embed-fit">
       <iframe
@@ -1301,14 +1307,7 @@ function Flipbook({ src, title, height }) {
         allowFullScreen
         referrerPolicy="no-referrer-when-downgrade"
         allow="autoplay; fullscreen; clipboard-write"
-        style={
-          /* zoom rather than transform: it re-lays the frame out at the smaller
-             size, so taps land where they look like they should. A transform
-             would only paint it smaller and leave hit-testing to the browser. */
-          shrunk
-            ? { border: 0, width: FLIP_W, height: FLIP_H, zoom: scale }
-            : { border: 0, width: "100%", height }
-        }
+        style={{ border: 0, width: "100%", height: landscapeH || height }}
       />
     </div>
   );
