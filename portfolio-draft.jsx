@@ -691,7 +691,7 @@ const CSS = `
 /* One typeface throughout. Labels earn their difference from size, letter-spacing
    and colour rather than from a second family, and only the four weights the
    stylesheet actually uses are requested. */
-@import url('https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Readex+Pro:wght@300;400;500;600&display=swap');
 
 .pf { --ease: cubic-bezier(.32,.72,0,1); font-family: 'Readex Pro', system-ui, -apple-system, sans-serif; background: #000; color: #fff; -webkit-font-smoothing: antialiased; }
 .pf * { box-sizing: border-box; }
@@ -1164,7 +1164,10 @@ const CSS = `
 .pf-chip { font-size: 12px; color: rgba(255,255,255,0.72); padding: 7px 14px; border-radius: 999px; background: rgba(255,255,255,0.05); }
 
 /* ---------- footer ---------- */
-.pf-foot { position: relative; padding: 44px 0 64px; overflow: hidden; }
+/* The footer is the one place set in a second typeface. Everything above it
+   shares a single family, so the change of voice marks the end of the page. */
+.pf-foot { position: relative; padding: 44px 0 64px; overflow: hidden;
+  font-family: 'DM Mono', ui-monospace, SFMono-Regular, Menlo, monospace; }
 .pf-foot-mail { font-size: clamp(1.4rem, 4.6vw, 3rem); letter-spacing: -0.04em; display: inline-block; transition: opacity .2s; }
 .pf-foot-mail:hover { opacity: 0.6; }
 .pf-foot-row { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 14px; margin-top: 34px; font-size: 12px; color: rgba(255,255,255,0.45); }
@@ -1940,7 +1943,7 @@ function BalancedHeadline({ text, color }) {
 /* A project card that flips in place. The front is the preview, the back is
    the case study. The wrapper's height animates between the two faces, so the
    list reflows around it and the other cards stay on screen. */
-function ProjectCard({ p, open, onToggle }) {
+function ProjectCard({ p, open, owns, onToggle }) {
   const frontRef = useRef(null);
   const backRef = useRef(null);
   const boxRef = useRef(null);
@@ -1985,6 +1988,12 @@ function ProjectCard({ p, open, onToggle }) {
   const firstRun = useRef(true);
   useLayoutEffect(() => {
     if (firstRun.current) { firstRun.current = false; return; }
+    /* Only the card that was actually clicked moves the page. Opening one card
+       closes another, so without this both of them ran the pin below at the
+       same time and fought over the scroll position — the one further down the
+       page won, which is why clicking a card above an open one used to leave
+       you at the old card instead of the top of the new one. */
+    if (!owns) return;
     const el = boxRef.current;
     if (!el) return;
     const NAV = 92;
@@ -2618,6 +2627,9 @@ export default function Portfolio() {
   const washRef = useRef(null);
   usePointerField(heroRef, washRef);
   const [open, setOpen] = useState(null);
+  /* Which card the reader last clicked. That card, and only that card, is
+     allowed to move the page while the turn animates. */
+  const [scrollOwner, setScrollOwner] = useState(null);
 
   return (
     <div className="pf">
@@ -2699,7 +2711,8 @@ export default function Portfolio() {
               <ProjectCard
                 p={p}
                 open={open === i}
-                onToggle={() => setOpen(open === i ? null : i)}
+                owns={scrollOwner === i}
+                onToggle={() => { setScrollOwner(i); setOpen(open === i ? null : i); }}
               />
             </Reveal>
           ))}
