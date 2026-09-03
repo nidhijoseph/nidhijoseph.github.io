@@ -1226,6 +1226,15 @@ const CSS = `
   .pf-d-headline span { display: inline; }
 }
 
+/* On a larger screen a card used to stand taller than the window, so it filled
+   the view on its own and gave no sense of a list. The card is sized from the
+   window's height instead, narrow enough that a card centred on screen leaves
+   the ones above and below it partly visible. Its proportions are unchanged —
+   the width follows from the height, since the image sets the shape. */
+@media (min-width: 761px) {
+  .pf-card { max-width: min(100%, calc(117vh - 106px)); margin-inline: auto; }
+}
+
 /* A touch screen has no pointer to hover with, but a tap leaves :hover stuck on
    whatever was last touched. That left one card sitting up and slightly scaled
    while the rest lay flat — whichever card you had last tapped or scrolled past.
@@ -1244,8 +1253,10 @@ const CSS = `
 @media (max-width: 560px) {
   /* Tight above and below the title, and a shrunken title would otherwise make
      its own bar shorter than the rest, so the bar holds the height of a
-     full-size one either way. */
-  .pf-card-bar { gap: 10px; padding: 9px 18px; min-height: 37px; }
+     full-size one either way. The frame around the image comes in to match, so
+     the card is mostly the work rather than the space around it. */
+  .pf-card-bar { gap: 10px; padding: 9px 10px; min-height: 37px; }
+  .pf-canvas { padding: 0 10px 10px; }
   /* The category and year hold their natural width; squeezed, they wrapped and
      made that card taller. The chevron goes — the whole card is tappable, and
      its 26px is what the longest title needs to stay on one line. */
@@ -1271,8 +1282,16 @@ const CSS = `
      4:5 so it does not fill the screen before a line has been read. */
   .pf-about .pf-cv-block { grid-template-columns: 1fr; gap: 26px; }
   .pf-about-left { max-width: none; align-items: center; }
-  .pf-portrait { width: 100%; margin-inline: auto; aspect-ratio: 5 / 4; object-position: 50% 35%; border-radius: 4px; }
-  .pf-about p.body { max-width: none; }
+  /* The same 4:5 crop the desktop uses. Cropping it to a landscape 5:4 to save
+     height cut the photograph about badly, so it keeps its shape and simply
+     takes the full column width. */
+  .pf-portrait { width: 100%; margin-inline: auto; border-radius: 4px; }
+  /* At a phone's measure the long words in this copy — "Communication",
+     "problem-solving" — decide where the lines break. Measured across every
+     line, 14px leaves the evenest right edge: the shortest line fills 80% of
+     the column against 78% at 14.5px, and going smaller makes it worse again,
+     down to 68% at 12.5px. */
+  .pf-about p.body { max-width: none; font-size: 14px; line-height: 1.7; }
 }
 
 /* Navigation. At 375px the bar wanted 424px of pill, so "Contact" fell off
