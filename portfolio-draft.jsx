@@ -1238,15 +1238,22 @@ const CSS = `
   .pf-tileimg:hover img, .pf-tileimg:hover video { transform: none; }
 }
 
-/* The card header. Side by side, the longest title needs 272px and its category
-   and year another 112px, inside a bar only 299px wide — so that one card wrapped
-   onto a second line and stood taller than the other eight. Stacking the two
-   gives every title the full width, so none of them wrap and every card in the
-   list is the same height. */
+/* The card header stays on one line at every width. Most titles fit as they are;
+   the few that do not are shrunk to fit by fitCardTitle, per card, so the bar
+   never wraps and every card in the list is the same height. */
 @media (max-width: 560px) {
-  .pf-card-bar { flex-direction: column; align-items: flex-start; gap: 3px; padding: 13px 18px; }
-  .pf-card-bar .meta { font-size: 11px; gap: 10px; }
-  .pf-card-title { font-size: 15px; }
+  /* A shrunken title would otherwise make its own bar shorter than the rest,
+     so the bar holds the height of a full-size one either way. */
+  .pf-card-bar { gap: 10px; padding: 14px 18px; min-height: 47px; }
+  /* The category and year hold their natural width; squeezed, they wrapped and
+     made that card taller. The chevron goes — the whole card is tappable, and
+     its 26px is what the longest title needs to stay on one line. */
+  .pf-card-bar .meta { font-size: 10.5px; gap: 8px; flex: none; white-space: nowrap; }
+  .pf-card-bar .meta svg { display: none; }
+  /* text-wrap: balance is set on every heading at .pf .pf-card-title, and it
+     drives the same underlying property as white-space, so this has to match
+     that specificity and name both to hold the title on one line. */
+  .pf .pf-card-title { white-space: nowrap; text-wrap: nowrap; overflow: hidden; text-overflow: ellipsis; }
 }
 
 /* About and Resume are built on the same two-column block, which on a phone left
@@ -1256,8 +1263,12 @@ const CSS = `
   .pf-cv-block { grid-template-columns: 1fr; gap: 14px; }
   /* About sets its own two-column split, at a higher specificity than the rule
      above, so it has to be named here or it keeps its columns. */
-  .pf-about .pf-cv-block { grid-template-columns: 1fr; gap: 24px; }
-  .pf-about-left { max-width: 210px; }
+  .pf-about .pf-cv-block { grid-template-columns: 1fr; gap: 26px; }
+  /* The portrait takes the full column and the writing sits underneath it,
+     in a slightly wider frame than the desktop 4:5 so it does not swallow
+     the screen before a single line has been read. */
+  .pf-about-left { max-width: none; }
+  .pf-portrait { aspect-ratio: 5 / 4; object-position: 50% 35%; border-radius: 4px; }
   .pf-about p.body { max-width: none; }
 }
 
@@ -1981,7 +1992,38 @@ function ProjectCard({ p, open, owns, onToggle }) {
   const frontRef = useRef(null);
   const backRef = useRef(null);
   const boxRef = useRef(null);
+  const barRef = useRef(null);
+  const titleRef = useRef(null);
+  const metaRef = useRef(null);
   const [h, setH] = useState(null);
+
+  /* Keep the card's title, category and year on a single line. On a phone the
+     bar has about 299px to work with, and the longest title alone wants 272px
+     of it, so that one card used to wrap and stand taller than the rest. Rather
+     than shrink every title to suit the longest, each is measured against the
+     room its own card actually has and only the ones that overflow are scaled
+     down. The title keeps its stylesheet size wherever it already fits. */
+  useLayoutEffect(() => {
+    const bar = barRef.current, title = titleRef.current, meta = metaRef.current;
+    if (!bar || !title) return;
+    const fit = () => {
+      title.style.fontSize = "";           // measure against the stylesheet size
+      const cs = getComputedStyle(bar);
+      const gap = parseFloat(cs.columnGap || cs.gap) || 0;
+      const room = bar.clientWidth
+        - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight)
+        - (meta ? meta.getBoundingClientRect().width : 0) - gap;
+      const needs = title.scrollWidth;
+      if (room > 0 && needs > room) {
+        const base = parseFloat(getComputedStyle(title).fontSize);
+        title.style.fontSize = Math.max(10, base * (room / needs)) + "px";
+      }
+    };
+    fit();
+    const ro = new ResizeObserver(fit);
+    ro.observe(bar);
+    return () => ro.disconnect();
+  }, [p.title, p.category, p.year]);
   const [ready, setReady] = useState(false);
   const [turning, setTurning] = useState(false);
   const [shot, setShot] = useState(null);
@@ -2117,9 +2159,9 @@ function ProjectCard({ p, open, owns, onToggle }) {
             tabIndex={open ? -1 : 0}
             aria-label={`Open ${p.title} case study`}
           >
-            <div className="pf-card-bar" style={{ background: p.color, color: p.ink }}>
-              <span className="pf-card-title">{p.title}</span>
-              <span className="meta"><span>{p.category}</span><span>{p.year}</span><Chevron dir="right" /></span>
+            <div className="pf-card-bar" ref={barRef} style={{ background: p.color, color: p.ink }}>
+              <span className="pf-card-title" ref={titleRef}>{p.title}</span>
+              <span className="meta" ref={metaRef}><span>{p.category}</span><span>{p.year}</span><Chevron dir="right" /></span>
             </div>
             <div className="pf-canvas">
               <div className="pf-canvas-in">
