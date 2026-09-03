@@ -688,14 +688,24 @@ const ROLL_MS = 3000;
    ================================================================== */
 
 const CSS = `
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Readex+Pro:wght@200;300;400;500;600;700&display=swap');
+/* One typeface throughout. Labels earn their difference from size, letter-spacing
+   and colour rather than from a second family, and only the four weights the
+   stylesheet actually uses are requested. */
+@import url('https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;400;500;600&display=swap');
 
 .pf { --ease: cubic-bezier(.32,.72,0,1); font-family: 'Readex Pro', system-ui, -apple-system, sans-serif; background: #000; color: #fff; -webkit-font-smoothing: antialiased; }
 .pf * { box-sizing: border-box; }
 /* keep line lengths even and stop single-word last lines at every width */
 .pf h1, .pf h2, .pf h3, .pf .pf-d-headline, .pf .pf-card-title, .pf .pf-cv-role, .pf .pf-foot-mail { text-wrap: balance; }
 .pf p, .pf li, .pf .pf-d-note-v, .pf .pf-cv-note { text-wrap: pretty; }
+/* A word is never split. If it will not fit it moves down whole, and it is
+   never hyphenated — which matters most on a phone, where the measure is
+   narrow enough that the browser would otherwise break words apart. */
+.pf, .pf * { hyphens: none; -webkit-hyphens: none; overflow-wrap: normal; word-break: normal; }
 .pf a { color: inherit; text-decoration: none; }
+/* Form elements do not inherit the page font on their own, so any button that
+   ever gains a label would otherwise render in the browser's default face. */
+.pf button, .pf input, .pf select, .pf textarea { font-family: inherit; }
 .pf :focus-visible { outline: 2px solid #fff; outline-offset: 3px; border-radius: 4px; }
 
 .pf-shell { max-width: 1160px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 2; }
@@ -890,11 +900,10 @@ const CSS = `
 .pf-d-top { display: grid; grid-template-columns: clamp(92px, 20vw, 230px) 1fr; gap: clamp(16px, 3.5vw, 60px); align-items: center; }
 .pf-d-notes { display: flex; flex-direction: column; gap: 15px; }
 .pf-d-note-k {
-  font-family: 'DM Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-weight: 400; font-size: 11px; letter-spacing: 0.03em;
+  font-weight: 500; font-size: 10.5px; letter-spacing: 0.09em; text-transform: uppercase;
   color: rgba(255,255,255,0.42); margin: 0 0 5px;
 }
-.pf-d-note-v { font-weight: 300; font-size: clamp(11.5px, 1.3vw, 13px); line-height: 1.5; margin: 0; overflow-wrap: break-word; }
+.pf-d-note-v { font-weight: 400; font-size: clamp(12.5px, 1.3vw, 13px); line-height: 1.5; margin: 0; }
 .pf-d-headline {
   line-height: 1.16; letter-spacing: -0.035em;
   font-weight: 500; color: #fff; margin: 0;
@@ -906,13 +915,12 @@ const CSS = `
 .pf-d-embed-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .pf-d-embed-out { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: rgba(255,255,255,0.6); transition: color .2s; }
 .pf-d-embed-out:hover { color: #fff; }
-.pf-d-embed iframe { display: block; border-radius: 3px; background: #111; margin-top: 14px; }
+.pf-d-embed iframe { display: block; border-radius: 3px; background: #111; }
 .pf-d-meta {
   margin-top: clamp(28px, 4vw, 46px); padding-top: 24px;
   border-top: 1px solid rgba(255,255,255,0.1);
   display: grid; grid-template-columns: 1fr 1fr; gap: clamp(16px, 3.5vw, 56px);
 }
-@media (max-width: 620px) { .pf-d-embed iframe { height: 420px !important; } }
 .pf-d-hero { margin: clamp(30px, 4.5vw, 56px) 0; border-radius: 3px; overflow: hidden; }
 .pf-d-hero img, .pf-d-hero svg, .pf-d-hero video { width: 100%; display: block; }
 .pf-d-intro { max-width: 62ch; margin-top: clamp(28px, 4vw, 44px); }
@@ -930,8 +938,9 @@ const CSS = `
 .pf-d-sec { margin-top: clamp(34px, 5vw, 62px); padding-top: clamp(26px, 3.5vw, 40px); border-top: 1px solid rgba(255,255,255,0.11); }
 .pf-d-sec-grid { display: grid; grid-template-columns: clamp(92px, 20vw, 230px) 1fr; gap: clamp(16px, 3.5vw, 60px); align-items: start; }
 .pf-d-sec-label {
-  font-family: 'DM Mono', ui-monospace, monospace; font-size: clamp(11px, 1.3vw, 12px);
-  letter-spacing: 0.03em; color: rgba(255,255,255,0.42); margin: 0 0 18px;
+  font-weight: 500; font-size: clamp(10.5px, 1.3vw, 11.5px);
+  letter-spacing: 0.09em; text-transform: uppercase;
+  color: rgba(255,255,255,0.42); margin: 0 0 18px;
 }
 .pf-d-side { display: flex; flex-direction: column; gap: 15px; }
 .pf-d-figure { margin: clamp(22px, 3vw, 34px) 0 0; }
@@ -953,7 +962,7 @@ const CSS = `
 .pf-swatches { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
 .pf-swatch { display: flex; align-items: center; gap: 9px; font-size: 11.5px; color: rgba(255,255,255,0.62); }
 .pf-swatch i { width: 17px; height: 17px; border-radius: 3px; display: block; flex: none; }
-.pf-swatch b { font-family: 'DM Mono', ui-monospace, monospace; font-weight: 400; color: rgba(255,255,255,0.82); }
+.pf-swatch b { font-weight: 500; letter-spacing: 0.04em; color: rgba(255,255,255,0.82); }
 
 /* collage */
 .pf-collage { display: grid; grid-template-columns: repeat(6, 1fr); gap: clamp(12px, 1.9vw, 24px); margin-top: clamp(22px, 3vw, 34px); align-items: start; }
@@ -1089,7 +1098,7 @@ const CSS = `
 /* a feature's copy starts level with the top of its screen */
 .pf-stage.top { align-items: start; }
 .pf-stage.top .pf-stage-copy { padding-top: 4px; }
-.pf-step-n { font-family: 'DM Mono', ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; letter-spacing: 0.04em; margin: 0 0 10px; }
+.pf-step-n { font-weight: 500; font-size: 10.5px; letter-spacing: 0.09em; text-transform: uppercase; margin: 0 0 10px; }
 .pf-step-t { font-size: clamp(15px, 1.7vw, 19px); font-weight: 500; margin: 0 0 9px; letter-spacing: -0.02em; }
 .pf-step-b { font-size: clamp(12.5px, 1.4vw, 14px); font-weight: 300; color: rgba(255,255,255,0.6); line-height: 1.6; margin: 0; }
 /* The phone narrows rather than dropping under the copy — a stage should read
@@ -1140,7 +1149,7 @@ const CSS = `
 .pf-dl { font-size: 12px; color: rgba(255,255,255,0.8); display: inline-flex; align-items: center; gap: 8px; padding: 9px 18px; border-radius: 999px; transition: background .25s, color .25s; }
 .pf-dl:hover { background: rgba(255,255,255,0.09); color: #fff; }
 .pf-cv-block { display: grid; grid-template-columns: clamp(88px, 17vw, 190px) 1fr; gap: clamp(16px, 3vw, 34px); padding: clamp(20px, 3vw, 28px) 0; border-top: 1px solid rgba(255,255,255,0.11); }
-.pf-cv-label { font-size: clamp(11px, 1.3vw, 13px); color: rgba(255,255,255,0.62); letter-spacing: -0.005em; overflow-wrap: break-word; }
+.pf-cv-label { font-size: clamp(11px, 1.3vw, 13px); color: rgba(255,255,255,0.62); letter-spacing: -0.005em; }
 .pf-cv-item { margin-bottom: 22px; }
 .pf-cv-item:last-child { margin-bottom: 0; }
 .pf-cv-top { display: flex; justify-content: space-between; align-items: baseline; gap: 14px; flex-wrap: wrap; }
@@ -1174,7 +1183,130 @@ const CSS = `
   @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
   @keyframes fadeOut { from { opacity: 1 } to { opacity: 0 } }
 }
+
+/* ------------------------------------------------------------------
+   PHONES
+   The case study is built on a two-column grid: a narrow label rail on
+   the left, content on the right. Below ~760px that rail has nowhere to
+   go — it collapses to about 92px, which is too narrow to set type in,
+   so paragraphs rag badly and long words get pushed apart. Every one of
+   those grids becomes a single column here, and the label sits above
+   its content instead of beside it.
+   ------------------------------------------------------------------ */
+@media (max-width: 760px) {
+  .pf-d-top,
+  .pf-d-sec-grid,
+  .pf-d-cols,
+  .pf-d-meta { grid-template-columns: 1fr; }
+
+  .pf-d-top { gap: 20px; align-items: start; }
+  .pf-d-sec-grid { gap: 4px; }
+  .pf-d-cols { gap: 26px; }
+  .pf-d-meta { gap: 22px; }
+  .pf-d-sec-label { margin-bottom: 10px; }
+
+  /* The notes read as a compact two-up block rather than a tall stack,
+     which is what left so much empty space beside the headline. */
+  .pf-d-notes { flex-direction: row; flex-wrap: wrap; gap: 16px 24px; }
+  .pf-d-notes > * { flex: 1 1 40%; min-width: 128px; }
+
+  /* Comfortable measure and a slightly looser line for reading at arm's length. */
+  .pf-d-cols p, .pf-d-out p, .pf-d-intro p, .pf-d-sec p:not([class]) {
+    font-size: 14.5px; line-height: 1.72;
+  }
+  .pf-d-headline { font-size: clamp(23px, 6.2vw, 30px); }
+  /* The headline is written as one line per phrase; on a phone those
+     phrases are free to run together and wrap naturally. */
+  .pf-d-headline span { display: inline; }
+}
+
+/* Navigation. At 375px the bar wanted 424px of pill, so "Contact" fell off
+   the end and the name broke onto a second line. Everything tightens until
+   the whole bar fits, and the name is held on one line. */
+@media (max-width: 560px) {
+  .pf-nav { padding: 12px 10px; }
+  .pf-nav-inner { gap: 7px; }
+  .pf-brand { padding: 9px 13px; }
+  .pf-brand-name { font-size: 12px; white-space: nowrap; }
+  .pf-links { padding: 5px; gap: 0; }
+  .pf-links a { font-size: 11.5px; padding: 6px 9px; white-space: nowrap; }
+}
+@media (max-width: 400px) {
+  .pf-brand { padding: 8px 11px; }
+  .pf-brand-name { font-size: 11.5px; }
+  .pf-links a { font-size: 11px; padding: 6px 7px; }
+}
+
+/* Hero. The three headline lines are held on one line each at desktop
+   sizes, which on a phone forced the type down to about 27px and left a
+   large empty field around it. Here the lines may wrap, so the type can
+   be set at a size that fills the space it is given. */
+@media (max-width: 700px) {
+  .pf-line { white-space: normal; }
+  .pf-headline { font-size: clamp(2rem, 8.4vw, 3.4rem); line-height: 1.0; }
+  .pf-hero-mid { gap: clamp(22px, 3.6vh, 36px); }
+  .pf-roll { font-size: clamp(1.15rem, 5.6vw, 1.7rem); height: 1.45em; }
+  .pf-desc-label { font-size: 13px; }
+}
+
+/* The flip-book shows a two-page spread only when its frame is landscape.
+   In a phone-width frame it falls back to a single page, so the frame is
+   rendered wide and scaled down to fit — both pages, just smaller. The
+   sizing itself is measured in Flipbook, since it depends on the width the
+   card actually gives it. */
+.pf-d-embed-fit { position: relative; width: 100%; margin-top: 14px; }
 `;
+
+/* A flip-book only lays out as a two-page spread when its frame is landscape.
+   A phone-width frame is portrait, so the book falls back to a single page and
+   you see just the right-hand one. Instead the frame is built at a fixed
+   landscape size — wide enough that the spread opens — and then scaled down to
+   whatever width the card actually has. Both pages, simply smaller. Above the
+   breakpoint nothing changes and the frame fills its box as before. */
+const FLIP_W = 900;
+const FLIP_H = 560;
+
+function Flipbook({ src, title, height }) {
+  const wrap = useRef(null);
+  const [scale, setScale] = useState(0);
+
+  useEffect(() => {
+    const el = wrap.current;
+    if (!el) return;
+    const measure = () => {
+      const w = el.clientWidth;
+      if (!w) return;
+      setScale(window.innerWidth > 760 ? 0 : w / FLIP_W);
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  const shrunk = scale > 0;
+  return (
+    <div ref={wrap} className="pf-d-embed-fit">
+      <iframe
+        className="fp-iframe"
+        title={title}
+        src={src}
+        scrolling="no"
+        allowFullScreen
+        referrerPolicy="no-referrer-when-downgrade"
+        allow="autoplay; fullscreen; clipboard-write"
+        style={
+          /* zoom rather than transform: it re-lays the frame out at the smaller
+             size, so taps land where they look like they should. A transform
+             would only paint it smaller and leave hit-testing to the browser. */
+          shrunk
+            ? { border: 0, width: FLIP_W, height: FLIP_H, zoom: scale }
+            : { border: 0, width: "100%", height }
+        }
+      />
+    </div>
+  );
+}
 
 function Reveal({ children, delay = 0 }) {
   const ref = useRef(null);
@@ -2018,16 +2150,7 @@ function ProjectCard({ p, open, onToggle }) {
                       {/* only mounted once the card is open, so the flip-book
                           isn't fetched for every visitor on page load */}
                       {open ? (
-                        <iframe
-                          className="fp-iframe"
-                          title={`${p.title} flipbook`}
-                          src={d.embed.src}
-                          scrolling="no"
-                          allowFullScreen
-                          referrerPolicy="no-referrer-when-downgrade"
-                          allow="autoplay; fullscreen; clipboard-write"
-                          style={{ border: 0, width: "100%", height: d.embed.height || 600 }}
-                        />
+                        <Flipbook src={d.embed.src} title={`${p.title} flipbook`} height={d.embed.height || 600} />
                       ) : (
                         <div style={{ width: "100%", height: d.embed.height || 600, background: "#111", borderRadius: 3 }} />
                       )}
