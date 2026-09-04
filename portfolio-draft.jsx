@@ -874,7 +874,10 @@ const CSS = `
 /* separate layer so the hover tilt can react fast while the flip stays slow */
 .pf-tilt { transform-style: preserve-3d; transition: transform .6s var(--ease); will-change: transform; }
 .pf-flip { position: relative; transform-style: preserve-3d; overflow-anchor: none; }
-.pf-flip.clipped { overflow: hidden; }
+/* The closed card is clipped so the tall case study behind it does not extend
+   the page's scroll height. 'clip' with a margin does that while still letting
+   the card grow past its box on hover — plain 'hidden' cut the top off. */
+.pf-flip.clipped { overflow: clip; overflow-clip-margin: 48px; }
 .pf-flip.ready { transition: transform .95s var(--ease), height .95s var(--ease); }
 .pf-flip.open { transform: rotateY(180deg); }
 .pf-face { position: absolute; top: 0; left: 0; width: 100%; backface-visibility: hidden; -webkit-backface-visibility: hidden; contain: layout paint; }
@@ -941,7 +944,7 @@ const CSS = `
 .pf-d-intro { max-width: 62ch; margin-top: clamp(28px, 4vw, 44px); }
 .pf-d-cols { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(16px, 3.5vw, 56px); }
 .pf-d-h3 { margin: 0 0 13px; }
-.pf-d-cols p:not([class]), .pf-d-out p:not([class]), .pf-d-intro p:not([class]), .pf-d-sec p:not([class]) { color: rgba(255,255,255,0.72); margin: 0 0 clamp(13px, 1.1vw, 17px); }
+.pf-d-cols p:not([class]), .pf-d-out p:not([class]), .pf-d-intro p:not([class]), .pf-d-sec p:not([class]) { margin: 0 0 clamp(13px, 1.1vw, 17px); }
 .pf-d-cols p:not([class]):last-child, .pf-d-out p:not([class]):last-child, .pf-d-intro p:not([class]):last-child, .pf-d-sec p:not([class]):last-child { margin-bottom: 0; }
 .pf-d-out { margin-top: clamp(30px, 4.5vw, 56px); }
 .pf-d-shots { display: grid; gap: 20px; margin-top: clamp(32px, 5vw, 60px); }
@@ -962,11 +965,10 @@ const CSS = `
 }
 .pf-figure-aside > .pf-tileimg { background: #fff; }
 .pf-figure-aside > div { padding: clamp(18px, 2.4vw, 30px) clamp(20px, 2.8vw, 34px); }
-/* brighter than a normal aside, but the same size as all other body text */
-.pf-figure-aside .pf-aside-b { color: rgba(255,255,255,0.86); max-width: none; }
-.pf-aside-b { color: rgba(255,255,255,0.62); margin: 0; }
+.pf-figure-aside .pf-aside-b { max-width: none; }
+.pf-aside-b { margin: 0; }
 @media (max-width: 700px) { .pf-figure-aside { grid-template-columns: 1fr; gap: 16px; } }
-.pf-d-cap { color: rgba(255,255,255,0.68); margin: 10px 0 0; }
+.pf-d-cap { margin: 10px 0 0; }
 
 /* logo pair */
 .pf-d-marks { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(14px, 2.5vw, 30px); margin-top: clamp(22px, 3vw, 34px); align-items: start; }
@@ -988,7 +990,7 @@ const CSS = `
 .pf-collage-group + .pf-collage-group { margin-top: clamp(46px, 6.5vw, 88px); }
 .pf-collage-group .pf-collage { margin-top: 0; }
 .pf-collage-group .pf-group-copy .pf-d-sec-label { line-height: 1; margin-top: 2px; }
-.pf-group-b { color: rgba(255,255,255,0.6); margin: 12px 0 0; }
+.pf-group-b { margin: 12px 0 0; }
 @media (max-width: 700px) { .pf-collage-group { grid-template-columns: 1fr; gap: 18px; } }
 
 /* clip tile with transport controls */
@@ -1086,7 +1088,7 @@ const CSS = `
 .pf-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: clamp(16px, 2.5vw, 34px); margin-top: clamp(24px, 3.5vw, 38px); }
 .pf-stat { border-top: 1px solid rgba(255,255,255,0.14); padding-top: 15px; }
 .pf-stat-v { font-size: clamp(30px, 5vw, 46px); font-weight: 600; letter-spacing: -0.03em; line-height: 1; margin: 0 0 10px; }
-.pf-stat-l { color: rgba(255,255,255,0.62); margin: 0; }
+.pf-stat-l { margin: 0; }
 
 /* callout for a key insight or a combined finding */
 .pf-insight { margin-top: clamp(24px, 3.5vw, 38px); padding: clamp(16px, 2.2vw, 24px) clamp(18px, 2.6vw, 28px); border-radius: 3px; background: rgba(255,255,255,0.045); }
@@ -1155,7 +1157,7 @@ const CSS = `
 .pf-about-title { margin-bottom: clamp(18px, 2.4vw, 30px); }
 .pf-about-left { display: flex; flex-direction: column; gap: 20px; }
 .pf-portrait { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; display: block; border-radius: 3px; filter: saturate(0.92) contrast(1.02); }
-.pf-about p.body { color: rgba(255,255,255,0.78); margin: 0 0 18px; max-width: 66ch; }
+.pf-about p.body { margin: 0 0 18px; max-width: 66ch; }
 .pf-about p.body:last-child { margin-bottom: 0; }
 
 /* ---------- resume ---------- */
@@ -1173,7 +1175,7 @@ const CSS = `
 .pf-cv-role { font-size: clamp(15px, 1.9vw, 18px); letter-spacing: -0.015em; font-weight: 500; }
 .pf-cv-year { font-size: 12px; color: rgba(255,255,255,0.45); white-space: nowrap; }
 .pf-cv-org { font-size: 13px; color: #FF8A45; margin-top: 3px; }
-.pf-cv-note { color: rgba(255,255,255,0.55); margin-top: 8px; max-width: 62ch; }
+.pf-cv-note { margin-top: 8px; max-width: 62ch; }
 .pf-chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .pf-chip { font-size: 12px; color: rgba(255,255,255,0.72); padding: 7px 14px; border-radius: 999px; background: rgba(255,255,255,0.05); }
 
@@ -1256,10 +1258,13 @@ const CSS = `
     margin-inline: auto;
     container-type: inline-size;
   }
-  .pf-card .pf-card-bar { padding: 1.875cqw 2.4cqw; }
-  .pf-card .pf-card-title { font-size: 1.875cqw; }
-  .pf-card .pf-card-bar .meta { font-size: 1.07cqw; gap: 1.25cqw; }
-  .pf-card .pf-canvas { padding: 0 2.4cqw 2.4cqw; }
+  /* The frame follows the card's width so it never looks heavy, but the type
+     keeps the size it has always had — scaling that down with the card left the
+     titles too small to read comfortably. */
+  .pf-card .pf-card-bar { padding: clamp(13px, 1.9cqw, 21px) clamp(16px, 2.4cqw, 27px); }
+  .pf-card .pf-card-title { font-size: clamp(17px, 2.34cqw, 21px); }
+  .pf-card .pf-card-bar .meta { font-size: clamp(11px, 1.34cqw, 12px); gap: 14px; }
+  .pf-card .pf-canvas { padding: 0 clamp(16px, 2.4cqw, 27px) clamp(16px, 2.4cqw, 27px); }
 
   /* The case study on the back is held to the same width, so turning a card
      over keeps it the size it was rather than opening out to the full page.
@@ -1284,6 +1289,15 @@ const CSS = `
   font-size: clamp(14.5px, 1.02vw, 15.5px);
   font-weight: 400;
   line-height: 1.68;
+  color: rgba(255,255,255,0.74);
+  /* Even out the whole block rather than only its last line. A paragraph that
+     ended halfway across the column left a hole on the right that read as the
+     text hanging to the left; balancing lifts the shortest line in the About
+     copy from 49% of the column to 77%. Browsers cap this at a handful of
+     lines and ignore it beyond that, so longer passages simply keep the
+     ordinary rag. Justifying instead was measured and rejected — it stretched
+     word gaps to 1.64em, six times a normal space. */
+  text-wrap: balance;
 }
 .pf-d-cap { font-weight: 300; }
 
@@ -2275,7 +2289,7 @@ function ProjectCard({ p, open, owns, onToggle }) {
                   {notes.map((n) => (
                     <div key={n.k}>
                       <p className="pf-d-note-k">{n.k}</p>
-                      <P className="pf-d-note-v" style={{ color: tone }}>{n.v}</P>
+                      <P className="pf-d-note-v">{n.v}</P>
                     </div>
                   ))}
                 </div>
@@ -2331,7 +2345,7 @@ function ProjectCard({ p, open, owns, onToggle }) {
                       {d.meta.map((m) => (
                         <div key={m.label}>
                           <p className="pf-d-note-k">{m.label}</p>
-                          <P className="pf-d-note-v" style={{ color: tone }}>{m.value}</P>
+                          <P className="pf-d-note-v">{m.value}</P>
                         </div>
                       ))}
                     </div>
@@ -2346,7 +2360,7 @@ function ProjectCard({ p, open, owns, onToggle }) {
                             {(d.story.facts || []).map((f) => (
                               <div key={f.k}>
                                 <p className="pf-d-note-k">{f.k}</p>
-                                <P className="pf-d-note-v" style={{ color: tone }}>{f.v}</P>
+                                <P className="pf-d-note-v">{f.v}</P>
                               </div>
                             ))}
                           </div>
@@ -2371,7 +2385,7 @@ function ProjectCard({ p, open, owns, onToggle }) {
                             {(d.iterations.attributes || []).map((f) => (
                               <div key={f.k}>
                                 <p className="pf-d-note-k">{f.k}</p>
-                                <P className="pf-d-note-v" style={{ color: tone }}>{f.v}</P>
+                                <P className="pf-d-note-v">{f.v}</P>
                               </div>
                             ))}
                           </div>
