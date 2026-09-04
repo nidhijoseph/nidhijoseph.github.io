@@ -1303,11 +1303,15 @@ const CSS = `
    the few that do not are shrunk to fit by fitCardTitle, per card, so the bar
    never wraps and every card in the list is the same height. */
 @media (max-width: 560px) {
-  /* One even 8px frame all the way round. The bar's padding is set to 4px
-     because the title's line box carries about 4px of leading above the capital
-     and below the baseline, so the space you actually see — edge to letter, and
-     letter to image — comes out at 8px on every side. */
-  .pf-card-bar { gap: 10px; padding: 4px 8px; min-height: 27px; }
+  /* One even 8px frame all the way round, and the title optically centred in
+     the space above the picture. Measured, the gaps were already equal — 8.5px
+     from the card's edge to the capitals and 8.0px from the baseline down to
+     the image — but they do not read as equal: above the title is the card's
+     edge against the page, below it is a large bright picture, and the eye
+     reads a gap against a big block as the wider of the two. The space below is
+     therefore cut to about three quarters of the space above, which is what
+     makes them look the same. */
+  .pf-card-bar { gap: 10px; padding: 4px 8px 2px; min-height: 25px; }
   .pf-canvas { padding: 0 8px 8px; }
   /* The category and year hold their natural width; squeezed, they wrapped and
      made that card taller. The chevron goes — the whole card is tappable, and
