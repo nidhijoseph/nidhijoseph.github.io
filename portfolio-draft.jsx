@@ -880,7 +880,10 @@ const CSS = `
 .pf-flip.clipped { overflow: clip; overflow-clip-margin: 48px; }
 .pf-flip.ready { transition: transform .95s var(--ease), height .95s var(--ease); }
 .pf-flip.open { transform: rotateY(180deg); }
-.pf-face { position: absolute; top: 0; left: 0; width: 100%; backface-visibility: hidden; -webkit-backface-visibility: hidden; contain: layout paint; }
+/* layout containment only. 'paint' also clips everything inside to this box,
+   which is what cut the top off a card as it grew on hover — the overflow rule
+   on .pf-flip was never the culprit. */
+.pf-face { position: absolute; top: 0; left: 0; width: 100%; backface-visibility: hidden; -webkit-backface-visibility: hidden; contain: layout; }
 .pf-back { transform: rotateY(180deg); pointer-events: none; }
 .pf-flip.open .pf-back { pointer-events: auto; }
 .pf-flip.open .pf-front { pointer-events: none; }
@@ -1024,10 +1027,13 @@ const CSS = `
   background: rgba(0,0,0,0.5); backdrop-filter: blur(6px); transition: background .2s, transform .3s;
 }
 .pf-tileimg:hover .pf-zoom { background: rgba(0,0,0,0.75); transform: translate(-1px,-1px); }
-/* On a phone every picture takes the whole column. Spanning half of a six
-   column grid left them about 142px wide inside a 295px card, which is too
-   small to look at — a video especially. One per row, full width. */
-@media (max-width: 620px) { .pf-collage > * { grid-column: span 6 !important; } }
+/* On a phone a group holding a single piece gives it the whole column, so a
+   lone video plays at a size worth watching. Groups with several pieces sit two
+   to a row instead — full width each would turn one project into a long scroll. */
+@media (max-width: 620px) {
+  .pf-collage > * { grid-column: span 3 !important; }
+  .pf-collage > :only-child { grid-column: span 6 !important; }
+}
 
 /* ---------- video ---------- */
 /* Screen recordings are portrait phone captures, so a tile that holds one
@@ -1080,7 +1086,7 @@ const CSS = `
 .pf-reel video { width: 100%; display: block; aspect-ratio: 16 / 9; object-fit: contain; background: #000; }
 .pf-reels { display: flex; flex-direction: column; margin-top: clamp(26px, 3.5vw, 40px); }
 .pf-reel-item + .pf-reel-item { margin-top: clamp(48px, 7vw, 92px); padding-top: clamp(48px, 7vw, 92px); border-top: 1px solid rgba(255,255,255,0.12); }
-.pf-reel-b { font-size: clamp(12.5px, 1.4vw, 14px); font-weight: 300; color: rgba(255,255,255,0.6); line-height: 1.6; margin: 0 0 clamp(20px, 2.6vw, 30px); max-width: 68ch; }
+.pf-reel-b { margin: 0 0 clamp(20px, 2.6vw, 30px); max-width: 68ch; }
 
 /* ---------- research: stat row ---------- */
 /* Two standalone figures, so proportional (not tabular) numerals — tabular
@@ -1117,7 +1123,7 @@ const CSS = `
 .pf-stage.top .pf-stage-copy { padding-top: 4px; }
 .pf-step-n { margin: 0 0 10px; }
 .pf-step-t { font-size: clamp(15px, 1.7vw, 19px); font-weight: 500; margin: 0 0 9px; letter-spacing: -0.02em; }
-.pf-step-b { font-size: clamp(12.5px, 1.4vw, 14px); font-weight: 300; color: rgba(255,255,255,0.6); line-height: 1.6; margin: 0; }
+.pf-step-b { margin: 0; }
 /* The phone narrows rather than dropping under the copy — a stage should read
    as one row at almost every width. */
 @media (max-width: 430px) {
@@ -1177,6 +1183,8 @@ const CSS = `
 .pf-cv-org { font-size: 13px; color: #FF8A45; margin-top: 3px; }
 .pf-cv-note { margin-top: 8px; max-width: 62ch; }
 .pf-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+/* stacked on a phone: wrapped rows left a single chip stranded on the last line */
+@media (max-width: 700px) { .pf-chips { flex-direction: column; align-items: flex-start; } }
 .pf-chip { font-size: 12px; color: rgba(255,255,255,0.72); padding: 7px 14px; border-radius: 999px; background: rgba(255,255,255,0.05); }
 
 /* ---------- footer ---------- */
@@ -1184,7 +1192,7 @@ const CSS = `
    shares a single family, so the change of voice marks the end of the page. */
 .pf-foot { position: relative; padding: 44px 0 64px; overflow: hidden;
   font-family: 'DM Mono', ui-monospace, SFMono-Regular, Menlo, monospace; }
-.pf-foot-mail { font-size: clamp(1.4rem, 4.6vw, 3rem); letter-spacing: -0.04em; display: inline-block; transition: opacity .2s; }
+.pf-foot-mail { font-size: clamp(1.05rem, 2.5vw, 1.75rem); letter-spacing: -0.02em; display: inline-block; transition: opacity .2s; }
 .pf-foot-mail:hover { opacity: 0.6; }
 .pf-foot-row { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 14px; margin-top: 34px; font-size: 12px; color: rgba(255,255,255,0.45); }
 .pf-avail { display: flex; align-items: center; }
@@ -1262,7 +1270,7 @@ const CSS = `
      keeps the size it has always had — scaling that down with the card left the
      titles too small to read comfortably. */
   .pf-card .pf-card-bar { padding: clamp(13px, 1.9cqw, 21px) clamp(16px, 2.4cqw, 27px); }
-  .pf-card .pf-card-title { font-size: clamp(17px, 2.34cqw, 21px); }
+  .pf-card .pf-card-title { font-size: clamp(19px, 2.7cqw, 25px); }
   .pf-card .pf-card-bar .meta { font-size: clamp(11px, 1.34cqw, 12px); gap: 14px; }
   .pf-card .pf-canvas { padding: 0 clamp(16px, 2.4cqw, 27px) clamp(16px, 2.4cqw, 27px); }
 
@@ -1285,7 +1293,7 @@ const CSS = `
    ------------------------------------------------------------------ */
 .pf-d-cols p:not([class]), .pf-d-out p:not([class]), .pf-d-intro p:not([class]),
 .pf-d-sec p:not([class]), .pf-ins-body, .pf-aside-b, .pf-group-b, .pf-stat-l,
-.pf-d-note-v, .pf-need-a, .pf-cv-note, .pf-about p.body, .pf-d-cap {
+.pf-d-note-v, .pf-need-a, .pf-cv-note, .pf-about p.body, .pf-step-b, .pf-reel-b {
   font-size: clamp(14.5px, 1.02vw, 15.5px);
   font-weight: 400;
   line-height: 1.68;
@@ -1299,7 +1307,10 @@ const CSS = `
      word gaps to 1.64em, six times a normal space. */
   text-wrap: balance;
 }
-.pf-d-cap { font-weight: 300; }
+/* A caption sits under the body text, not level with it: the smaller, lighter
+   setting the feature descriptions used to have. They were the wrong way round
+   — the caption read louder than the text it was captioning. */
+.pf-d-cap { font-size: clamp(12.5px, 1.4vw, 14px); font-weight: 300; color: rgba(255,255,255,0.6); line-height: 1.6; }
 
 /* A touch screen has no pointer to hover with, but a tap leaves :hover stuck on
    whatever was last touched. That left one card sitting up and slightly scaled
@@ -1658,8 +1669,12 @@ function FlowField() {
       const from = scrollTop - 160;
       const to = scrollTop + H + 160;
 
-      for (let s = 0; s < STRANDS; s++) {
-        const u = s / (STRANDS - 1);
+      /* Fewer strands on a phone. The field is drawn with 'lighter' blending
+         over the whole screen, which is cheap on a laptop and not on a handset
+         — and it was competing for frames with the rolling line in the hero. */
+      const N = W <= 700 ? 18 : STRANDS;
+      for (let s = 0; s < N; s++) {
+        const u = s / (N - 1);
         const mid = 1 - Math.abs(u - 0.5) * 2;   // 1 at the core, 0 at the edges
         const offset = (u - 0.5) * band;
         const phase = u * 6.2;
