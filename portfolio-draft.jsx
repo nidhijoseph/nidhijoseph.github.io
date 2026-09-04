@@ -875,9 +875,13 @@ const CSS = `
 .pf-tilt { transform-style: preserve-3d; transition: transform .6s var(--ease); will-change: transform; }
 .pf-flip { position: relative; transform-style: preserve-3d; overflow-anchor: none; }
 /* The closed card is clipped so the tall case study behind it does not extend
-   the page's scroll height. 'clip' with a margin does that while still letting
-   the card grow past its box on hover — plain 'hidden' cut the top off. */
+   the page's scroll height. overflow-clip-margin would let the card grow past
+   the box, but Safari ignores it, so the top still came off there. Instead the
+   back face itself is held to the card's height — nothing can extend the page —
+   which means the clip can simply be lifted while a card is hovered. */
 .pf-flip.clipped { overflow: clip; overflow-clip-margin: 48px; }
+.pf-flip.clipped .pf-back { height: 100%; overflow: hidden; }
+.pf-flip.clipped:has(.pf-card:hover) { overflow: visible; }
 .pf-flip.ready { transition: transform .95s var(--ease), height .95s var(--ease); }
 .pf-flip.open { transform: rotateY(180deg); }
 /* layout containment only. 'paint' also clips everything inside to this box,
@@ -1173,7 +1177,8 @@ const CSS = `
 .pf-dl:hover { background: rgba(255,255,255,0.09); color: #fff; }
 /* first-baseline alignment, so the small label sits on the same line as the
    first line of the entry beside it rather than on the same top edge */
-.pf-cv-block { display: grid; grid-template-columns: clamp(88px, 17vw, 190px) 1fr; gap: clamp(16px, 3vw, 34px); align-items: baseline; padding: clamp(20px, 3vw, 28px) 0; border-top: 1px solid rgba(255,255,255,0.11); }
+/* the same split About uses, so the two sections' text lines up */
+.pf-cv-block { display: grid; grid-template-columns: 1fr 2fr; gap: clamp(20px, 3.5vw, 56px); align-items: baseline; padding: clamp(20px, 3vw, 28px) 0; border-top: 1px solid rgba(255,255,255,0.11); }
 .pf-cv-label { color: rgba(255,255,255,0.62); }
 .pf-cv-item { margin-bottom: 22px; }
 .pf-cv-item:last-child { margin-bottom: 0; }
@@ -1192,7 +1197,7 @@ const CSS = `
    shares a single family, so the change of voice marks the end of the page. */
 .pf-foot { position: relative; padding: 44px 0 64px; overflow: hidden;
   font-family: 'DM Mono', ui-monospace, SFMono-Regular, Menlo, monospace; }
-.pf-foot-mail { font-size: clamp(1.05rem, 2.5vw, 1.75rem); letter-spacing: -0.02em; display: inline-block; transition: opacity .2s; }
+.pf-foot-mail { font-size: clamp(1.35rem, 3.4vw, 2.4rem); letter-spacing: -0.02em; display: inline-block; transition: opacity .2s; }
 .pf-foot-mail:hover { opacity: 0.6; }
 .pf-foot-row { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 14px; margin-top: 34px; font-size: 12px; color: rgba(255,255,255,0.45); }
 .pf-avail { display: flex; align-items: center; }
@@ -1799,7 +1804,7 @@ function Lightbox({ shot, onClose }) {
       {isVideo(shot.src)
         ? <video src={shot.src} muted loop playsInline autoPlay controls onClick={(e) => e.stopPropagation()} />
         : <img src={shot.src} alt={shot.caption || ""} onClick={(e) => e.stopPropagation()} />}
-      {shot.caption ? <p className="pf-lb-cap">{shot.caption}</p> : null}
+      {shot.caption ? <p className="pf-lb-cap">{noOrphan(shot.caption)}</p> : null}
     </div>
   );
 }
@@ -1889,7 +1894,7 @@ function Phone({ src, caption }) {
           {isVideo(src) ? <Vid src={src} /> : <img src={src} alt={caption || ""} />}
         </div>
       </div>
-      {caption ? <figcaption>{caption}</figcaption> : null}
+      {caption ? <figcaption>{noOrphan(caption)}</figcaption> : null}
     </figure>
   );
 }
@@ -2304,7 +2309,7 @@ function ProjectCard({ p, open, owns, onToggle }) {
                   {notes.map((n) => (
                     <div key={n.k}>
                       <p className="pf-d-note-k">{n.k}</p>
-                      <P className="pf-d-note-v">{n.v}</P>
+                      <P className="pf-d-note-v" style={{ color: tone }}>{n.v}</P>
                     </div>
                   ))}
                 </div>
@@ -2360,7 +2365,7 @@ function ProjectCard({ p, open, owns, onToggle }) {
                       {d.meta.map((m) => (
                         <div key={m.label}>
                           <p className="pf-d-note-k">{m.label}</p>
-                          <P className="pf-d-note-v">{m.value}</P>
+                          <P className="pf-d-note-v" style={{ color: tone }}>{m.value}</P>
                         </div>
                       ))}
                     </div>
@@ -2375,7 +2380,7 @@ function ProjectCard({ p, open, owns, onToggle }) {
                             {(d.story.facts || []).map((f) => (
                               <div key={f.k}>
                                 <p className="pf-d-note-k">{f.k}</p>
-                                <P className="pf-d-note-v">{f.v}</P>
+                                <P className="pf-d-note-v" style={{ color: tone }}>{f.v}</P>
                               </div>
                             ))}
                           </div>
@@ -2386,7 +2391,7 @@ function ProjectCard({ p, open, owns, onToggle }) {
                       </div>
                       <figure className="pf-d-figure">
                         <Tile shot={{ src: d.story.image, caption: d.story.caption }} wide free tone={p} onOpen={setShot} />
-                        <figcaption className="pf-d-cap">{d.story.caption}</figcaption>
+                        <figcaption className="pf-d-cap">{noOrphan(d.story.caption)}</figcaption>
                       </figure>
                     </div>
                   )}
@@ -2400,7 +2405,7 @@ function ProjectCard({ p, open, owns, onToggle }) {
                             {(d.iterations.attributes || []).map((f) => (
                               <div key={f.k}>
                                 <p className="pf-d-note-k">{f.k}</p>
-                                <P className="pf-d-note-v">{f.v}</P>
+                                <P className="pf-d-note-v" style={{ color: tone }}>{f.v}</P>
                               </div>
                             ))}
                           </div>
@@ -2411,7 +2416,7 @@ function ProjectCard({ p, open, owns, onToggle }) {
                       </div>
                       <figure className="pf-d-figure">
                         <Tile shot={{ src: d.iterations.image, caption: d.iterations.caption }} wide free tone={p} onOpen={setShot} />
-                        <figcaption className="pf-d-cap">{d.iterations.caption}</figcaption>
+                        <figcaption className="pf-d-cap">{noOrphan(d.iterations.caption)}</figcaption>
                       </figure>
                     </div>
                   )}
@@ -2437,7 +2442,7 @@ function ProjectCard({ p, open, owns, onToggle }) {
                         {d.logos.marks.map((m) => (
                           <figure key={m.caption} style={{ margin: 0 }}>
                             <Tile shot={m} free tone={p} onOpen={setShot} />
-                            <figcaption className="pf-d-cap">{m.caption}</figcaption>
+                            <figcaption className="pf-d-cap">{noOrphan(m.caption)}</figcaption>
                           </figure>
                         ))}
                       </div>
@@ -2458,7 +2463,7 @@ function ProjectCard({ p, open, owns, onToggle }) {
                                 {isVideo(it.src)
                                   ? <ClipTile shot={it} onOpen={setShot} />
                                   : <Tile shot={it} tone={p} onOpen={setShot} />}
-                                {it.caption ? <p className="pf-d-cap">{it.caption}</p> : null}
+                                {it.caption ? <p className="pf-d-cap">{noOrphan(it.caption)}</p> : null}
                               </div>
                             ))}
                           </div>
@@ -2524,7 +2529,7 @@ function ProjectCard({ p, open, owns, onToggle }) {
                       {d.needs.image && (
                         <figure className="pf-d-figure">
                           <Tile shot={{ src: d.needs.image, caption: d.needs.caption }} wide free tone={p} onOpen={setShot} />
-                          {d.needs.caption ? <figcaption className="pf-d-cap">{d.needs.caption}</figcaption> : null}
+                          {d.needs.caption ? <figcaption className="pf-d-cap">{noOrphan(d.needs.caption)}</figcaption> : null}
                         </figure>
                       )}
                     </div>
