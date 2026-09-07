@@ -802,7 +802,7 @@ const CSS = `
 /* The whole card grows as one. It used to lift by 8px while scaling barely at
    all, and the picture inside scaled on its own — so the frame stayed put while
    its contents crept, which is what made the spacing look wrong. */
-.pf-card:hover { transform: translateY(-6px) scale(1.025); box-shadow: 0 26px 60px rgba(0,0,0,0.6); }
+.pf-card:hover { transform: scale(1); box-shadow: 0 26px 60px rgba(0,0,0,0.6); }
 
 /* light that follows the pointer across a card */
 .pf-sheen { position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .5s ease; background: radial-gradient(320px circle at var(--cx, 50%) var(--cy, 50%), rgba(255,255,255,0.14), transparent 62%); }
@@ -1083,7 +1083,7 @@ const CSS = `
 .pf-phone-btn.b2 { top: 24%; height: 7%; }
 .pf-phone-btn.b3 { top: 33%; height: 7%; }
 .pf-phone-btn.b4 { top: 23%; height: 11%; }
-.pf-phone figcaption { position: relative; z-index: 3; font-size: clamp(12.5px, 1.35vw, 14px); color: rgba(255,255,255,0.86); margin: 30px 0 0; line-height: 1.5; text-align: center; }
+.pf-phone figcaption { position: relative; z-index: 3; font-size: clamp(12.5px, 1.4vw, 14px); font-weight: 300; color: rgba(255,255,255,0.6); line-height: 1.6; margin: 30px 0 0; line-height: 1.5; text-align: center; }
 
 /* a plain 16:9 frame for landscape motion work */
 .pf-reel { position: relative; border-radius: 3px; overflow: hidden; background: #000; }
@@ -1267,9 +1267,14 @@ const CSS = `
    of frame, a 21px title, 12px meta. */
 @media (min-width: 761px) {
   .pf-card {
-    max-width: min(100%, calc(117vh - 106px));
+    max-width: min(100%, calc(121vh - 110px));
     margin-inline: auto;
     container-type: inline-size;
+    /* At rest the card sits a fraction inside its box and grows to fill it on
+       hover. Growing past the box meant relying on the clip being lifted, and
+       browsers disagree about that — this way there is nothing to clip. */
+    transform: scale(0.965);
+    transform-origin: 50% 50%;
   }
   /* The frame follows the card's width so it never looks heavy, but the type
      keeps the size it has always had — scaling that down with the card left the
