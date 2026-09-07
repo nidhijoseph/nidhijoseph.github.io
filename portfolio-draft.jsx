@@ -1058,9 +1058,17 @@ const CSS = `
 .pf-phone { margin: 0; }
 /* iPhone: titanium rail, thin even bezel, Dynamic Island, side buttons. The
    19.5:9 ratio is the handset's, and the recordings were captured at it. */
+/* The display carries the aspect ratio, not the body.
+   It used to sit on the shell, which includes its padding, so the screen inside
+   came out at 0.4534 rather than the display's 0.4600 — and because that padding
+   was a clamp() in vw, the mismatch changed with the window. The same recording
+   was therefore cropped by a different amount at every size, which is what made
+   the mockups look like they came from different phones.
+   Every inset below is a percentage of the phone's own width, so the rail, the
+   bezel and the corner radii stay in proportion however large it is drawn. */
 .pf-phone-shell {
-  position: relative; width: 100%; aspect-ratio: 1206 / 2622;
-  border-radius: clamp(26px, 4.6vw, 46px); padding: clamp(3px, 0.6vw, 5px);
+  position: relative; width: 100%;
+  border-radius: 15%/6.9%; padding: 3%;
   background: linear-gradient(145deg, #4a4a4f 0%, #232327 12%, #0d0d0f 34%, #08080a 54%, #1c1c20 78%, #3d3d42 100%);
   box-shadow:
     0 2px 4px rgba(0,0,0,0.7),
@@ -1068,20 +1076,23 @@ const CSS = `
     0 24px 40px rgba(0,0,0,0.45),
     inset 0 0 0 1px rgba(255,255,255,0.10);
 }
-/* inner black bezel between rail and screen */
+/* the black bezel, showing as a real edge between the rail and the glass */
 .pf-phone-shell::before {
-  content: ''; position: absolute; inset: clamp(3px, 0.6vw, 5px); border-radius: clamp(23px, 4.1vw, 41px);
+  content: ''; position: absolute; inset: 1.2%; border-radius: 13.6%/6.3%;
   background: #050506; pointer-events: none;
 }
 .pf-phone-screen {
-  position: relative; z-index: 1; width: 100%; height: 100%; overflow: hidden;
-  border-radius: clamp(23px, 4.1vw, 41px); background: #000;
+  position: relative; z-index: 1; width: 100%; aspect-ratio: 1206 / 2622; overflow: hidden;
+  border-radius: 12.4%/5.6%; background: #000;
 }
-.pf-phone-screen img, .pf-phone-screen video { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* contain, not cover: the recordings are 720x1566 against a 1206x2622 display,
+   a difference of four hundredths of a percent, so nothing is cropped and the
+   margins you designed reach the edge of the screen intact. */
+.pf-phone-screen img, .pf-phone-screen video { width: 100%; height: 100%; object-fit: contain; display: block; background: #000; }
 /* Dynamic Island */
 .pf-phone-shell::after {
-  content: ''; position: absolute; top: clamp(9px, 1.7vw, 17px); left: 50%; transform: translateX(-50%);
-  width: 30%; height: clamp(11px, 1.9vw, 19px); border-radius: 999px; background: #000;
+  content: ''; position: absolute; top: 5.2%; left: 50%; transform: translateX(-50%);
+  width: 27%; height: 3.4%; border-radius: 999px; background: #000;
   pointer-events: none; z-index: 2;
 }
 /* side buttons */
