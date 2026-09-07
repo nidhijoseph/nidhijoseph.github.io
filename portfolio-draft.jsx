@@ -927,7 +927,16 @@ const CSS = `
   font-size: 10.5px; font-weight: 400; letter-spacing: 0.09em;
   text-transform: uppercase; line-height: 1.45;
 }
+/* ------------------------------------------------------------------
+   The strip of metadata at the head of a case study — year, tools, skills,
+   and the materials block lower down. It is set in the second typeface and
+   smaller than the body so it reads as a note attached to the project
+   rather than part of the writing. The values keep the project's colour,
+   which is what ties the strip to the card it belongs to.
+   ------------------------------------------------------------------ */
+.pf-d-note-k, .pf-d-note-v { font-family: 'DM Mono', ui-monospace, SFMono-Regular, Menlo, monospace; }
 .pf-d-note-k { color: rgba(255,255,255,0.42); margin: 0 0 5px; }
+.pf-d-note-v { font-size: clamp(11.5px, 1.05vw, 12.5px); font-weight: 400; line-height: 1.5; }
 .pf-d-note-v { margin: 0; }
 .pf-d-headline {
   line-height: 1.16; letter-spacing: -0.035em;
@@ -1303,7 +1312,7 @@ const CSS = `
    ------------------------------------------------------------------ */
 .pf-d-cols p:not([class]), .pf-d-out p:not([class]), .pf-d-intro p:not([class]),
 .pf-d-sec p:not([class]), .pf-ins-body, .pf-aside-b, .pf-group-b, .pf-stat-l,
-.pf-d-note-v, .pf-need-a, .pf-cv-note, .pf-about p.body, .pf-step-b, .pf-reel-b {
+.pf-need-a, .pf-cv-note, .pf-about p.body, .pf-step-b, .pf-reel-b {
   font-size: clamp(14.5px, 1.02vw, 15.5px);
   font-weight: 400;
   line-height: 1.68;
